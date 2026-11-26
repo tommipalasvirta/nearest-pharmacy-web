@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { HELSINKI } from '../test/fixtures'
-import { describeOpenStatus, evaluateOpeningHours, wallClockIn } from './openingHours'
+import { describeOpenStatus, evaluateOpeningHours, wallClockIn, type Region } from './openingHours'
 import type { Pharmacy } from './types'
 
-const FINLAND = { countryCode: 'fi', state: 'Uusimaa' }
+const FINLAND: Region = { countryCode: 'fi', state: 'Uusimaa' }
 const TOKYO = { lat: 35.6812, lon: 139.7671 }
 const NEW_YORK = { lat: 40.7128, lon: -74.006 }
 
@@ -44,6 +44,15 @@ describe('evaluateOpeningHours', () => {
   it('resolves public-holiday rules using the region', async () => {
     const independenceDay = new Date('2026-12-06T10:00:00Z')
     const status = await statusOf('Mo-Su 08:00-20:00; PH off', independenceDay)
+    expect(status?.isOpen).toBe(false)
+  })
+
+  it('resolves regional holidays by the state code, whatever language the state is named in', async () => {
+    const munich = { lat: 48.1374, lon: 11.5755 }
+    const bavaria = { countryCode: 'de', state: 'Bavaria', stateCode: 'DE-BY' }
+    // Epiphany is a public holiday in Bavaria but not in all of Germany.
+    const epiphany = new Date('2026-01-06T11:00:00Z')
+    const status = await statusOf('Mo-Su 08:00-20:00; PH off', epiphany, munich, bavaria)
     expect(status?.isOpen).toBe(false)
   })
 

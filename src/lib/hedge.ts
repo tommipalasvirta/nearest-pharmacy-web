@@ -24,14 +24,16 @@ export function firstSuccessful<T>(
     const startNext = () => {
       clearTimeout(timer)
       if (started === attempts.length || raceSignal.aborted) return
-      const attempt = attempts[started++]
-      attempt(raceSignal).then(
+      const index = started++
+      attempts[index](raceSignal).then(
         (value) => finish(() => resolve(value)),
         (error) => {
           errors.push(error)
           if (errors.length === attempts.length) {
             finish(() => reject(new AggregateError(errors, 'Every attempt failed')))
-          } else {
+          } else if (index === started - 1) {
+            // Only the newest attempt's failure brings the next one forward;
+            // an older one failing leaves the newest its head start.
             startNext()
           }
         },

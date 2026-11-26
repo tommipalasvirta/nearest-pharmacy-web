@@ -28,6 +28,8 @@ export interface SourceResult {
 
 export interface SourceContext {
   signal: AbortSignal
+  /** The country `origin` is in, where known, as a two-letter ISO code. */
+  countryCode?: string
   fetchFn?: typeof fetch
 }
 
@@ -40,6 +42,8 @@ export type PharmacySource = (
 
 export interface SearchOptions {
   signal?: AbortSignal
+  /** The country `origin` is in, where known, as a two-letter ISO code. */
+  countryCode?: string
   /** Live sources, tried in order; later ones are fallbacks. */
   sources?: PharmacySource[]
   /** A saved copy to use when no live source answers in time; `null` for none. */
@@ -80,10 +84,11 @@ export function findNearbyPharmacies(
     headStartMs = FALLBACK_HEAD_START_MS,
     savedDataHeadStartMs = SAVED_DATA_HEAD_START_MS,
     signal,
+    countryCode,
   } = options
 
   const attempt = (source: PharmacySource) => (raceSignal: AbortSignal) =>
-    searchWidening(source, origin, radii, raceSignal)
+    searchWidening(source, origin, radii, { signal: raceSignal, countryCode })
   const live = (raceSignal: AbortSignal) => firstSuccessful(sources.map(attempt), headStartMs, raceSignal)
 
   return firstSuccessful(savedData ? [live, attempt(savedData)] : [live], savedDataHeadStartMs, signal)
@@ -97,12 +102,19 @@ async function searchWidening(
   source: PharmacySource,
   origin: Coordinates,
   radii: number[],
-  signal: AbortSignal,
+  context: SourceContext,
 ): Promise<SearchResult> {
   let best: SourceResult = { pharmacies: [], radiusMeters: 0 }
 
   for (const radiusMeters of radii) {
-    const found = await source(origin, radiusMeters, { signal })
+    let found: SourceResult
+    try {
+      found = await source(origin, radiusMeters, context)
+    } catch (error) {
+      // A few pharmacies nearby are worth more than an error about a wider circle.
+      if (best.pharmacies.length > 0 && !context.signal.aborted) break
+      throw error
+    }
     if (found.pharmacies.length >= best.pharmacies.length) best = found
     if (best.pharmacies.length >= ENOUGH_RESULTS) break
   }

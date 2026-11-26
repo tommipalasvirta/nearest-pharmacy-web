@@ -2,7 +2,7 @@ import { EARTH_RADIUS_METERS, haversineMeters, type Coordinates } from './geo'
 import type { Region } from './openingHours'
 import type { PharmacySource } from './search'
 import type { Pharmacy } from './types'
-import { normalizeUrl } from './url'
+import { firstValue, normalizeUrl } from './url'
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org'
 const REQUEST_TIMEOUT_MS = 10_000
@@ -19,6 +19,7 @@ const BOX_MARGIN = 1.01
 interface NominatimAddress {
   country_code?: string
   state?: string
+  'ISO3166-2-lvl4'?: string
   suburb?: string
   neighbourhood?: string
   city?: string
@@ -146,7 +147,7 @@ export function toPharmacies(places: NominatimPlace[], origin: Coordinates): Pha
         lon,
         distanceMeters: haversineMeters(origin, { lat, lon }),
         address: [street, locality(address)].filter(Boolean).join(', ') || undefined,
-        phone: tags.phone ?? tags['contact:phone'],
+        phone: firstValue(tags.phone ?? tags['contact:phone']),
         website: normalizeUrl(tags.website ?? tags['contact:website']),
         openingHours: tags.opening_hours,
       }
@@ -175,15 +176,15 @@ function spacedOut<Input, Output>(request: (input: Input) => Promise<Output>, si
 
 const pause = (milliseconds: number, signal: AbortSignal) =>
   new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(resolve, milliseconds)
-    signal.addEventListener(
-      'abort',
-      () => {
-        clearTimeout(timer)
-        reject(signal.reason)
-      },
-      { once: true },
-    )
+    const giveUp = () => {
+      clearTimeout(timer)
+      reject(signal.reason)
+    }
+    const timer = setTimeout(() => {
+      signal.removeEventListener('abort', giveUp)
+      resolve()
+    }, milliseconds)
+    signal.addEventListener('abort', giveUp, { once: true })
   })
 
 /** A box that contains the circle around `center`. */
@@ -209,7 +210,7 @@ const locality = (address: NominatimAddress) =>
 
 function toRegion(address: NominatimAddress | undefined): Region | undefined {
   if (!address?.country_code) return undefined
-  return { countryCode: address.country_code, state: address.state }
+  return { countryCode: address.country_code, state: address.state, stateCode: address['ISO3166-2-lvl4'] }
 }
 
 async function getJson<T>(

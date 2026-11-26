@@ -32,4 +32,11 @@ describe('searchSnapshot', () => {
   it('has nothing to offer outside the Nordic countries', async () => {
     await expect(searchSnapshot(BERLIN, 50_000, offline)).rejects.toThrow('Nordic countries')
   })
+
+  it('turns away a place just across the border when its country is known', async () => {
+    // Flensburg is in Germany, a few kilometres from pharmacies in Denmark.
+    const flensburg = { lat: 54.7937, lon: 9.4469 }
+    await expect(searchSnapshot(flensburg, 50_000, { ...offline, countryCode: 'de' })).rejects.toThrow()
+    await expect(searchSnapshot(COPENHAGEN, 5_000, { ...offline, countryCode: 'dk' })).resolves.toBeDefined()
+  })
 })

@@ -47,6 +47,20 @@ describe('findNearbyPharmacies', () => {
     expect(result.pharmacies).toHaveLength(6)
   })
 
+  it('keeps the pharmacies it has when a wider circle cannot be loaded', async () => {
+    const source = sourceReturning(pharmacies(2))
+    source.mockRejectedValueOnce(new Error('server busy'))
+    const result = await findNearbyPharmacies(HELSINKI, { sources: [source], savedData: null })
+    expect(result.pharmacies).toHaveLength(2)
+    expect(result.radiusMeters).toBe(5000)
+  })
+
+  it('tells its sources which country the place is in', async () => {
+    const source = sourceReturning(pharmacies(6))
+    await findNearbyPharmacies(HELSINKI, { sources: [source], countryCode: 'fi' })
+    expect(source.mock.calls[0][2]).toMatchObject({ countryCode: 'fi' })
+  })
+
   it('reports the widest radius when nothing is found anywhere', async () => {
     const source = sourceReturning([], [], [])
     const result = await findNearbyPharmacies(HELSINKI, { sources: [source] })

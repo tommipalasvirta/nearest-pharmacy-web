@@ -1,7 +1,7 @@
 import { haversineMeters, type Coordinates } from './geo'
 import type { PharmacySource } from './search'
 import type { Pharmacy } from './types'
-import { normalizeUrl } from './url'
+import { firstValue, normalizeUrl } from './url'
 
 export const OVERPASS_URL = 'https://overpass-api.de/api/interpreter'
 
@@ -46,7 +46,7 @@ export function toPharmacies(elements: OverpassElement[], origin: Coordinates): 
       lon: position.lon,
       distanceMeters: haversineMeters(origin, { lat: position.lat, lon: position.lon }),
       address: formatAddress(tags),
-      phone: tags.phone ?? tags['contact:phone'],
+      phone: firstValue(tags.phone ?? tags['contact:phone']),
       website: normalizeUrl(tags.website ?? tags['contact:website']),
       openingHours: tags.opening_hours,
     }

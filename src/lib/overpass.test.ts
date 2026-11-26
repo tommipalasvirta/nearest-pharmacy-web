@@ -56,6 +56,14 @@ describe('toPharmacies', () => {
     })
   })
 
+  it('uses the first of several phone numbers or websites', () => {
+    const tags = { phone: '+358 9 123; +358 9 456', website: 'https://one.example;https://two.example' }
+    expect(toPharmacies([node(1, 0, tags)], HELSINKI)[0]).toMatchObject({
+      phone: '+358 9 123',
+      website: 'https://one.example',
+    })
+  })
+
   it('falls back to brand, then a generic name', () => {
     const [branded, unnamed] = toPharmacies([node(1, 0, { brand: 'Boots' }), node(2, 0.001)], HELSINKI)
     expect(branded.name).toBe('Boots')

@@ -10,7 +10,10 @@ export interface OpenStatus {
 /** Where the pharmacies are, so public-holiday rules ("PH off") can be resolved. */
 export interface Region {
   countryCode: string
+  /** The state's name, in whatever language the geocoder answered in. */
   state?: string
+  /** The state's ISO 3166-2 code, e.g. "DE-BY", which does not depend on language. */
+  stateCode?: string
 }
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -25,7 +28,7 @@ const LOOK_AHEAD_MS = 14 * 86_400_000
  * time zone of the place being searched, not the browser's: searching Tokyo
  * from Helsinki must not show Helsinki's opening state.
  *
- * The parser (~1 MB) and the time-zone lookup are loaded on demand rather than
+ * The parser (~700 kB) and the time-zone lookup are loaded on demand rather than
  * with the page. Pharmacies whose tag is missing or cannot be evaluated are
  * left out, and their raw hours are shown instead.
  */
@@ -48,7 +51,11 @@ export async function evaluateOpeningHours(
   const location = {
     lat: String(origin.lat),
     lon: String(origin.lon),
-    address: { country_code: region?.countryCode ?? '', state: region?.state ?? '' },
+    address: {
+      country_code: region?.countryCode ?? '',
+      state: region?.state ?? '',
+      'ISO3166-2-lvl4': region?.stateCode,
+    },
   }
 
   for (const pharmacy of pharmacies) {

@@ -56,4 +56,25 @@ describe('firstSuccessful', () => {
     await vi.advanceTimersByTimeAsync(10_000)
     expect(fallback).not.toHaveBeenCalled()
   })
+
+  it('gives each fallback its head start, even when an older attempt fails meanwhile', async () => {
+    const failingAfter = (ms: number) => () =>
+      new Promise<string>((_resolve, reject) => setTimeout(() => reject(new Error('down')), ms))
+    const third = vi.fn(after(0, 'third'))
+    const race = firstSuccessful([failingAfter(1500), hanging, third], 1000)
+
+    // The second attempt started at 1000 ms; the first failing at 1500 ms changes nothing.
+    await vi.advanceTimersByTimeAsync(1900)
+    expect(third).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(200)
+    await expect(race).resolves.toBe('third')
+  })
+
+  it('rejects with every error when all attempts fail', async () => {
+    const failing = async () => {
+      throw new Error('down')
+    }
+    await expect(firstSuccessful([failing, failing], 1000)).rejects.toThrow('Every attempt failed')
+  })
 })
