@@ -404,6 +404,42 @@ input {
   height: 1.2rem;
 }
 
+/* A filter that floats under the search bar. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-self: start;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--float-shadow);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--paper);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.chip__count {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.chip svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--led);
+}
+
 /* Nearest pharmacy -------------------------------------------------------- */
 
 .nearest {

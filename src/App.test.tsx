@@ -17,7 +17,7 @@ const pharmacyNode = (id: number, latOffset: number, tags: Record<string, string
   type: 'node',
   id,
   ...north(latOffset),
-  tags: { amenity: 'pharmacy', ...tags },
+  tags: { amenity: 'pharmacy', ...tags } as Record<string, string>,
 })
 
 const OVERPASS_PHARMACIES = [
@@ -152,6 +152,62 @@ describe('finding pharmacies from the device location', () => {
     const nearest = (await screen.findByText('Nearest to you')).closest('article')!
     expect(within(nearest).getByRole('heading', { name: 'Sillan Apteekki' })).toBeVisible()
     expect(within(nearest).getByText('in a straight line')).toBeVisible()
+  })
+})
+
+describe('filtering to pharmacies that are open now', () => {
+  const openNow = () => screen.getByRole('button', { name: /^Open now/ })
+  const listedNames = () =>
+    within(screen.getByRole('list'))
+      .getAllByRole('listitem')
+      .map((row) => within(row).getByText(/Apteekki/).textContent)
+
+  it('leaves out pharmacies that are closed or have no listed hours', async () => {
+    stubNetwork()
+    render(<App />)
+    await useMyLocation()
+    await screen.findByText('Nearest to you')
+
+    await userEvent.click(openNow())
+
+    expect(openNow()).toHaveAttribute('aria-pressed', 'true')
+    expect(openNow()).toHaveTextContent('2 of 5')
+    const nearest = screen.getByText('Nearest open now').closest('article')!
+    expect(within(nearest).getByRole('heading', { name: 'Kallion Apteekki' })).toBeVisible()
+    expect(listedNames()).toEqual(['Sillan Apteekki'])
+  })
+
+  it('shows every pharmacy again when switched off', async () => {
+    stubNetwork()
+    render(<App />)
+    await useMyLocation()
+    await screen.findByText('Nearest to you')
+
+    await userEvent.click(openNow())
+    await userEvent.click(openNow())
+
+    expect(openNow()).toHaveAttribute('aria-pressed', 'false')
+    expect(listedNames()).toHaveLength(4)
+  })
+
+  it('says so when nothing nearby is open, and offers the full list', async () => {
+    const withoutHours = OVERPASS_PHARMACIES.map(({ tags, ...node }) => ({
+      ...node,
+      tags: { amenity: 'pharmacy', name: tags.name },
+    }))
+    stubNetwork({ overpass: () => jsonResponse({ elements: withoutHours }) })
+    render(<App />)
+    await useMyLocation()
+    await screen.findByText('Nearest to you')
+
+    await userEvent.click(openNow())
+
+    expect(screen.getByRole('heading', { name: 'No pharmacy nearby is open right now' })).toBeVisible()
+    expect(screen.queryByText('Nearest open now')).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Show all 5' }))
+
+    expect(screen.getByText('Nearest to you')).toBeVisible()
   })
 })
 

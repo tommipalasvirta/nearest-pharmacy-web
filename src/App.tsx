@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { CheckIcon } from './components/Icons'
 import { LocationForm } from './components/LocationForm'
 import { MapView, type MapInsets } from './components/MapView'
 import { PharmacyCross } from './components/PharmacyCross'
 import { PharmacyList } from './components/PharmacyList'
 import { SearchBar } from './components/SearchBar'
 import { StatusMessage } from './components/StatusMessage'
+import { useOpenNowFilter } from './hooks/useOpenNowFilter'
 import { usePharmacySearch } from './hooks/usePharmacySearch'
 import { useWalkingRoute } from './hooks/useWalkingRoute'
 import { hasLocationPermission } from './lib/geolocation'
@@ -17,7 +19,7 @@ const WIDE_SCREEN = '(min-width: 56rem)'
 
 export default function App() {
   const { state, locate, searchAddress, retry } = usePharmacySearch()
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [chosenId, setChosenId] = useState<string | null>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLDivElement>(null)
 
@@ -33,7 +35,7 @@ export default function App() {
   }, [locate])
 
   const toggleSelected = useCallback(
-    (id: string) => setSelectedId((current) => (current === id ? null : id)),
+    (id: string) => setChosenId((current) => (current === id ? null : id)),
     [],
   )
 
@@ -47,8 +49,15 @@ export default function App() {
   }, [])
 
   const origin = 'origin' in state ? state.origin : undefined
-  const pharmacies = state.status === 'results' ? state.pharmacies : NO_PHARMACIES
+  const results = state.status === 'results' ? state : undefined
+  const found = results?.pharmacies ?? NO_PHARMACIES
   const busy = state.status === 'locating' || state.status === 'searching'
+
+  const { openOnly, setOpenOnly, visible: pharmacies } = useOpenNowFilter(found, results?.openStatuses)
+
+  // A selection does not outlive its pharmacy: it lapses on a new search, or
+  // when the filter hides the pharmacy.
+  const selectedId = pharmacies.some((pharmacy) => pharmacy.id === chosenId) ? chosenId : null
 
   // The line on the map leads to the selected pharmacy, or else the nearest.
   const routeTo = pharmacies.find((pharmacy) => pharmacy.id === selectedId) ?? pharmacies[0]
@@ -106,13 +115,43 @@ export default function App() {
             onSearchAddress={searchAddress}
             busy={busy}
           />
+          {results && (
+            <button
+              type="button"
+              className="chip"
+              aria-pressed={openOnly}
+              onClick={() => setOpenOnly(!openOnly)}
+            >
+              {openOnly && <CheckIcon />}
+              Open now
+              {openOnly && (
+                <span className="chip__count">
+                  {pharmacies.length} of {found.length}
+                </span>
+              )}
+            </button>
+          )}
           {status}
+          {results && pharmacies.length === 0 && (
+            <div className="message" role="status">
+              <h2>No pharmacy nearby is open right now</h2>
+              <p>
+                {results.openStatuses.size === 0
+                  ? `Opening hours are not listed for any of the ${found.length} nearest pharmacies.`
+                  : `The ${found.length} nearest pharmacies are closed or have no opening hours listed.`}
+              </p>
+              <button type="button" className="button" onClick={() => setOpenOnly(false)}>
+                Show all {found.length}
+              </button>
+            </div>
+          )}
         </div>
-        {state.status === 'results' && (
+        {results && pharmacies.length > 0 && (
           <PharmacyList
-            pharmacies={state.pharmacies}
-            origin={state.origin}
-            openStatuses={state.openStatuses}
+            pharmacies={pharmacies}
+            origin={results.origin}
+            openStatuses={results.openStatuses}
+            openOnly={openOnly}
             selectedId={selectedId}
             onSelect={toggleSelected}
           />

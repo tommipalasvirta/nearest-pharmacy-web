@@ -60,7 +60,9 @@ The map fills the screen and the answer floats over it. The nearest pharmacy com
 first, with its walking distance and time and a directions link, and a dotted line
 on the map follows the walking route to it. The numbered pins match the ranks in the
 list. Selecting a pin or a row highlights the other and moves the route to that
-pharmacy. On a phone the results sit in a
+pharmacy. The **Open now** filter under the search bar narrows the list and the map
+to pharmacies that are open at this moment, and the nearest of those becomes the
+answer. On a phone the results sit in a
 sheet under the map: the nearest pharmacy is always visible and the rest of the list
 opens on demand.
 
@@ -133,6 +135,7 @@ src/
   hooks/
     usePharmacySearch.ts  The search flow as one state machine
     useWalkingRoute.ts    The route drawn on the map
+    useOpenNowFilter.ts   The "Open now" filter
   components/             Map, search bar, results sheet, status messages
   test/                   Fixtures and browser stubs shared by the tests
   App.tsx                 Start screen and the map-first results layout
@@ -149,6 +152,9 @@ src/
   traffic.
 - Walking distances are measured for the 25 pharmacies nearest in a straight line.
   A pharmacy outside that set is not considered, even if the walk to it is shorter.
+- The "Open now" filter narrows the pharmacies already found. It does not search
+  further afield for an open one, and it hides pharmacies whose hours are not
+  mapped, because they cannot be promised to be open.
 - When neither router answers in time, distances are straight lines and no walking
   time is shown. A new search tries the routers again.
 - The time zone comes from a compact lookup table that can be wrong within a few

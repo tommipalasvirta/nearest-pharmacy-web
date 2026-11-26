@@ -8,6 +8,8 @@ interface Props {
   pharmacies: Pharmacy[]
   origin: Origin
   openStatuses: Map<string, OpenStatus>
+  /** Whether the list has been narrowed to pharmacies that are open now. */
+  openOnly: boolean
   selectedId: string | null
   onSelect: (id: string) => void
 }
@@ -27,7 +29,14 @@ function describeTrip({ walk }: Pharmacy): string {
  * On wide screens both float over the map. On phones this is a sheet under the
  * map: the nearest pharmacy is always visible and the list opens on demand.
  */
-export function PharmacyList({ pharmacies, origin, openStatuses, selectedId, onSelect }: Props) {
+export function PharmacyList({
+  pharmacies,
+  origin,
+  openStatuses,
+  openOnly,
+  selectedId,
+  onSelect,
+}: Props) {
   const [nearest, ...others] = pharmacies
   const [listOpened, setListOpened] = useState(false)
 
@@ -52,7 +61,7 @@ export function PharmacyList({ pharmacies, origin, openStatuses, selectedId, onS
   return (
     <div className="sheet">
       <article className="nearest" data-selected={selectedId === nearest.id}>
-        <p className="nearest__kicker">Nearest to you</p>
+        <p className="nearest__kicker">{openOnly ? 'Nearest open now' : 'Nearest to you'}</p>
         <p className="nearest__distance">
           {formatDistance(travelMeters(nearest))}
           <span className="nearest__walk">{describeTrip(nearest)}</span>
@@ -72,7 +81,7 @@ export function PharmacyList({ pharmacies, origin, openStatuses, selectedId, onS
       {others.length > 0 && (
         <section className="list-card" data-open={listOpen} aria-labelledby="others-heading">
           <h2 className="list-card__heading" id="others-heading">
-            <span className="list-card__title">Other pharmacies nearby</span>
+            <span className="list-card__title">{openOnly ? 'Also open now' : 'Other pharmacies nearby'}</span>
             <button
               type="button"
               className="list-card__toggle"
@@ -80,7 +89,9 @@ export function PharmacyList({ pharmacies, origin, openStatuses, selectedId, onS
               aria-controls="other-pharmacies"
               onClick={toggleList}
             >
-              {listOpen ? 'Hide other pharmacies' : `Show ${others.length} more nearby`}
+              {listOpen
+                ? 'Hide other pharmacies'
+                : `Show ${others.length} more ${openOnly ? 'open now' : 'nearby'}`}
             </button>
           </h2>
           <div className="list-card__scroll" id="other-pharmacies">
