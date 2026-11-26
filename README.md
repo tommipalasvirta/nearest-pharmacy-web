@@ -104,11 +104,11 @@ As a last resort there is a **saved copy of the Nordic countries' pharmacies** i
 repository ([`src/data/nordic-pharmacies.json`](src/data/nordic-pharmacies.json):
 3,632 pharmacies in Denmark, Finland, Iceland, Norway and Sweden, a 160 kB chunk
 after compression, downloaded only when needed). It is used when both live sources
-fail, or when neither has answered within 8 seconds, and the list's fine print then gives the
-date of the copy. With it, the app answers anywhere in those countries even when
-every public pharmacy source is down. A place counts as covered when its country is
-one of the five or, if the country is not known, when a saved pharmacy lies within
-50 km. `npm run snapshot` refreshes the copy from Overpass.
+fail, or when neither has answered within 8 seconds, and the list's fine print then
+gives the date of the copy. With it, the app answers anywhere in those countries
+even when every public pharmacy source is down. A place counts as covered when its
+country is one of the five or, if the country is not known, when a saved pharmacy
+lies within 50 km. `npm run snapshot` refreshes the copy from Overpass.
 
 Address search has a backup of its own: **Photon**, a second public geocoder built
 on OSM data, is asked when Nominatim fails or takes longer than 2 seconds.
@@ -133,9 +133,10 @@ Other choices:
 - **The `opening_hours` parser is about 700 kB**, because the tag's grammar is large
   (holidays, week numbers, sunrise). It is loaded on demand with the first search,
   so it does not slow down the first paint, and if it cannot be loaded the
-  pharmacies are shown with their hours as written in OSM. The parser can search forever
-  for the next change of some real-world tags, such as a store that is always open
-  but lists shorter pharmacy hours, so that search is limited to two weeks ahead.
+  pharmacies are shown with their hours as written in OSM. The parser can search
+  forever for the next change of some real-world tags, such as a store that is
+  always open but lists shorter pharmacy hours, so that search is limited to two
+  weeks ahead.
 - **Time zones are looked up offline** from the coordinates, with a 70 kB table
   loaded alongside the parser. Opening hours are local times, so a search for
   Tokyo made from Helsinki has to be evaluated on Tokyo's clock.
@@ -175,9 +176,9 @@ scripts/
 - Results are only as good as OpenStreetMap is locally. A pharmacy missing from OSM
   is missing here, and opening hours are shown only where someone has mapped them.
 - The app relies on free public servers (Overpass, Nominatim, Photon, the two
-  routers, OSM tiles) that have usage policies and occasional outages. Each one has a fallback
-  or a degraded mode, but this is fine for a demo and light use, not for production
-  traffic.
+  routers, OSM tiles) that have usage policies and occasional outages. Each one has
+  a fallback or a degraded mode, but this is fine for a demo and light use, not for
+  production traffic.
 - At most the 100 pharmacies nearest in a straight line are shown, within the
   radius searched. In a very dense city that is less than the full 5 km, and more
   so when Nominatim is the source that answers.
