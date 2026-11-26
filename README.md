@@ -42,7 +42,7 @@ Other commands:
 ## How it works
 
 1. **Where you are.** The browser Geolocation API, or an address geocoded with
-   Nominatim when you would rather not share a location (or have blocked it).
+   Nominatim when location sharing is declined or unavailable.
 2. **What is nearby.** Every OpenStreetMap object tagged `amenity=pharmacy` within a
    radius. The radius starts at 1.5 km and widens to 5, 15 and 50 km until there are
    at least five results, so a city centre gets one small query and a rural area
@@ -74,12 +74,11 @@ There are two ways to query OSM, and the app uses both:
 - **Overpass API** is the primary source. It is built for "everything with this tag
   within this radius", and it returns pharmacies mapped as points and as building
   outlines alike.
-- **Nominatim** is the fallback. While building this, the public Overpass servers
-  were taking 30 to 40 seconds to answer, and the mirrors were timing out. An app
-  that waits that long looks broken, so the request is hedged: if Overpass has not
-  answered within 3 seconds, or fails, the same search also runs against Nominatim
-  and the first answer wins. For the test area both sources returned the same 26
-  pharmacies.
+- **Nominatim** is the fallback. Public Overpass servers can be slow under load:
+  response times of 30 to 40 seconds were measured during development, with mirrors
+  timing out. The request is therefore hedged: if Overpass has not answered within
+  3 seconds, or fails, the same search also runs against Nominatim and the first
+  answer wins. For central Helsinki both sources return the same set of pharmacies.
 
 Nominatim returns at most 40 places per search in no useful order, so a full
 response might be missing the nearest pharmacy. When a response is full, the search
@@ -89,10 +88,11 @@ area is halved until everything fits; see `searchNominatim` in
 Other choices:
 
 - **React, TypeScript and Vite**, with Leaflet for the map. Leaflet is used directly
-  through a ref rather than through a wrapper library; the map needs three effects.
-- **Layout.** The first version had the list in a side panel next to the map. I put
-  that screen on a [Superdesign](https://superdesign.dev) canvas with two alternative
-  layouts and went with the map-first one, since the map is what you navigate by.
+  through a ref rather than through a wrapper library, which keeps the map to a
+  few effects.
+- **Map-first layout.** The map fills the screen and the results float over it,
+  because the map is what people navigate by. The map is told how much of it is
+  covered, so results and selected pins are never hidden behind the floating column.
 - **No backend.** Everything runs in the browser. A production version would put a
   small server in front of the data sources to cache results and stop depending on
   volunteer-run public instances.
@@ -130,7 +130,7 @@ src/
   but not for production traffic.
 - Opening hours are evaluated in the browser's time zone, which is wrong if you
   search an address in another time zone.
-- Only the data layer has automated tests. The UI was checked by hand in Chrome at
+- Automated tests cover the data layer. The UI is verified manually in Chrome at
   desktop and phone widths.
 
 ## License
