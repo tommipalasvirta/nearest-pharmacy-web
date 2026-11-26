@@ -28,7 +28,8 @@ Open http://localhost:5173 and either:
 - type an address or place name, for example `Mannerheimintie 5, Helsinki`.
 
 Browsers only share a location on `localhost` or HTTPS, so use the `localhost` URL
-rather than a LAN IP address.
+rather than a LAN IP address. Once the browser has been allowed to share the location
+with the site, the app searches straight away on later visits.
 
 Other commands:
 
@@ -67,9 +68,11 @@ to pharmacies that are open at this moment, and the nearest of those becomes the
 answer. On a phone the results sit in a sheet under the map: the nearest pharmacy is
 always visible and the rest of the list opens on demand.
 
-Every state has its own screen: locating, searching, location blocked, location
-unavailable, address not found, no pharmacies in range, and network failure with a
-retry.
+Every state has its own message: locating, searching, location blocked, location
+unavailable or unsupported, address not found, no pharmacies in range, and network
+failure with a retry. A new search from the results keeps the map and the previous
+results on screen until it has somewhere new to show, and it replaces a search that
+is still running.
 
 ## Data source and tradeoffs
 
@@ -92,8 +95,8 @@ There are two ways to query OSM, and the app uses both:
 Nominatim returns at most 50 places per search in no useful order, so a full
 response might be missing the nearest pharmacy. A box that comes back full is read
 again as four quarters, and if a quarter is full too, the search radius is halved;
-see `searchNominatim` in [`src/lib/nominatim.ts`](src/lib/nominatim.ts). Those
-requests are spaced a second apart, as Nominatim's usage policy asks. Asking for
+see `searchNominatim` in [`src/lib/nominatim.ts`](src/lib/nominatim.ts). These
+re-reads are spaced a second apart, as Nominatim's usage policy asks. Asking for
 the next page instead does not work: Nominatim's servers number the same place
 differently, so pages from different servers repeat each other.
 
@@ -103,7 +106,9 @@ repository ([`src/data/nordic-pharmacies.json`](src/data/nordic-pharmacies.json)
 after compression, downloaded only when needed). It is used when both live sources
 fail, or when neither has answered within 8 seconds, and the list's fine print then gives the
 date of the copy. With it, the app answers anywhere in those countries even when
-every public pharmacy source is down. `npm run snapshot` refreshes it from Overpass.
+every public pharmacy source is down. A place counts as covered when its country is
+one of the five or, if the country is not known, when a saved pharmacy lies within
+50 km. `npm run snapshot` refreshes the copy from Overpass.
 
 Address search has a backup of its own: **Photon**, a second public geocoder built
 on OSM data, is asked when Nominatim fails or takes longer than 2 seconds.
@@ -126,8 +131,9 @@ Other choices:
   small server in front of the data sources to cache results and stop depending on
   volunteer-run public instances.
 - **The `opening_hours` parser is about 700 kB**, because the tag's grammar is large
-  (holidays, week numbers, sunrise). It is loaded on demand after the first results
-  arrive, so it does not slow down the first paint. The parser can search forever
+  (holidays, week numbers, sunrise). It is loaded on demand with the first search,
+  so it does not slow down the first paint, and if it cannot be loaded the
+  pharmacies are shown with their hours as written in OSM. The parser can search forever
   for the next change of some real-world tags, such as a store that is always open
   but lists shorter pharmacy hours, so that search is limited to two weeks ahead.
 - **Time zones are looked up offline** from the coordinates, with a 70 kB table
@@ -138,7 +144,7 @@ Other choices:
 
 ```
 src/
-  lib/                    Framework-free logic, all unit-tested
+  lib/                    Framework-free logic, with unit tests
     geo.ts                Haversine distance, distance formatting
     search.ts             Widening radius across the pharmacy sources
     hedge.ts              "First source to answer wins", with a head start
@@ -150,6 +156,7 @@ src/
     routing.ts            Walking distances and routes (Valhalla, OSRM)
     openingHours.ts       Open/closed status from the OSM tag, in local time
     geolocation.ts        Promise wrapper for the Geolocation API
+    types.ts, url.ts      Shared types; tidying of OSM tag values
   hooks/
     usePharmacySearch.ts  The search flow as one state machine
     useWalkingRoute.ts    The route drawn on the map
@@ -175,8 +182,11 @@ scripts/
   radius searched. In a very dense city that is less than the full 5 km, and more
   so when Nominatim is the source that answers.
 - The saved copy covers the Nordic countries only and is as old as its date. Close
-  to a border with another country it lacks the pharmacies on the other side.
-  Elsewhere in the world the app needs a live source.
+  to a border with another country it lacks the pharmacies on the other side, and
+  when the country of a place just across the border is not known, the copy answers
+  with Nordic pharmacies only. Elsewhere in the world the app needs a live source.
+- Public holidays ("PH off") need the country, and regional ones the state, which
+  come from the geocoder. Without them such hours are shown as written.
 - Address search needs one of the two geocoders, and the map needs the OSM tile
   server. Neither has an offline copy.
 - The "Open now" filter narrows the pharmacies already found. It does not search
@@ -192,4 +202,6 @@ scripts/
 
 ## License
 
-MIT. Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors.
+The code is MIT licensed. Map data, including the saved copy of pharmacies in
+`src/data/`, is © [OpenStreetMap](https://www.openstreetmap.org/copyright)
+contributors and available under the Open Database License.
