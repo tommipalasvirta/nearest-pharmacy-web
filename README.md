@@ -38,14 +38,15 @@ Other commands:
 | `npm run build` | Type-checks and builds to `dist/` |
 | `npm run preview` | Serves the production build locally |
 | `npm run lint` | Lints with oxlint |
+| `npm run snapshot` | Refreshes the saved copy of the Helsinki region's pharmacies |
 
 ## How it works
 
 1. **Where you are.** The browser Geolocation API, or an address geocoded with
    Nominatim when location sharing is declined or unavailable.
 2. **What is nearby.** Every OpenStreetMap object tagged `amenity=pharmacy` within a
-   radius. The radius starts at 1.5 km and widens to 5, 15 and 50 km until there are
-   at least five results, so a city centre gets one small query and a rural area
+   radius, up to the 100 nearest. The radius starts at 5 km, enough to cover a town,
+   and widens to 15 and 50 km until there are at least five results, so a rural area
    still finds something.
 3. **Ranking.** Walking distance, nearest first. One request to a routing server
    measures the walk to every candidate, because a pharmacy across a river or a
@@ -88,10 +89,18 @@ There are two ways to query OSM, and the app uses both:
   3 seconds, or fails, the same search also runs against Nominatim and the first
   answer wins. For central Helsinki both sources return the same set of pharmacies.
 
-Nominatim returns at most 40 places per search in no useful order, so a full
-response might be missing the nearest pharmacy. When a response is full, the search
-area is halved until everything fits; see `searchNominatim` in
-[`src/lib/nominatim.ts`](src/lib/nominatim.ts).
+Nominatim returns at most 50 places per search in no useful order, so a full
+response might be missing the nearest pharmacy. A box that comes back full is read
+again as four quarters, and if a quarter is full too, the search radius is halved;
+see `searchNominatim` in [`src/lib/nominatim.ts`](src/lib/nominatim.ts). Asking for
+the next page instead does not work: Nominatim's servers number the same place
+differently, so pages from different servers repeat each other.
+
+As a last resort there is a **saved copy of the Helsinki region's pharmacies** in
+the repository ([`src/data/helsinki-region.json`](src/data/helsinki-region.json),
+119 pharmacies, a 33 kB chunk downloaded only when needed). It is used when both live
+sources fail, or when neither has answered within 8 seconds, and the app then says
+which day the copy is from. `npm run snapshot` refreshes it from Overpass.
 
 Walking distances and routes come from the two public routers behind the directions
 on openstreetmap.org, both run by FOSSGIS on OSM data. **Valhalla** is asked first.
@@ -125,10 +134,11 @@ Other choices:
 src/
   lib/                    Framework-free logic, all unit-tested
     geo.ts                Haversine distance, distance formatting
-    search.ts             Widening radius across the two pharmacy sources
+    search.ts             Widening radius across the pharmacy sources
     hedge.ts              "First source to answer wins", with a head start
     overpass.ts           Overpass source
     nominatim.ts          Nominatim source, geocoding, reverse geocoding
+    snapshot.ts           Saved copy of the Helsinki region, the last resort
     routing.ts            Walking distances and routes (Valhalla, OSRM)
     openingHours.ts       Open/closed status from the OSM tag, in local time
     geolocation.ts        Promise wrapper for the Geolocation API
@@ -137,9 +147,12 @@ src/
     useWalkingRoute.ts    The route drawn on the map
     useOpenNowFilter.ts   The "Open now" filter
   components/             Map, search bar, results sheet, status messages
+  data/                   The saved copy itself
   test/                   Fixtures and browser stubs shared by the tests
   App.tsx                 Start screen and the map-first results layout
   App.test.tsx            The whole app against a fake network
+scripts/
+  update-snapshot.mjs     Downloads the saved copy from Overpass
 ```
 
 ## Known limitations
@@ -150,8 +163,12 @@ src/
   tiles) that have usage policies and occasional outages. Each one has a fallback
   or a degraded mode, but this is fine for a demo and light use, not for production
   traffic.
-- Walking distances are measured for the 25 pharmacies nearest in a straight line.
-  A pharmacy outside that set is not considered, even if the walk to it is shorter.
+- At most the 100 pharmacies nearest in a straight line are shown, within the
+  radius searched. In a very dense city that is less than the full 5 km, and more
+  so when Nominatim is the source that answers.
+- The saved copy covers the Helsinki region only and is as old as its date. Address
+  search still needs Nominatim, so with every live source down only "Use my
+  location" works.
 - The "Open now" filter narrows the pharmacies already found. It does not search
   further afield for an open one, and it hides pharmacies whose hours are not
   mapped, because they cannot be promised to be open.
