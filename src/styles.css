@@ -1,0 +1,629 @@
+/* Tokens ------------------------------------------------------------------ */
+
+:root {
+  --paper: #f6faf7;
+  --surface: #ffffff;
+  --ink: #0f2a20; /* bottle green, used as the dark */
+  --muted: #53675d;
+  --line: #d5e3db;
+  --cross: #007a48; /* pharmacy-sign green, dark enough for text on white */
+  --led: #19c37d; /* the lit sign; decoration and text on ink only */
+  --closed: #a3321f;
+  --you: #1f5fd1;
+
+  --radius: 10px;
+  --panel-width: 27.5rem;
+
+  font-family: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 100%;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+p,
+ol {
+  margin: 0;
+}
+
+a {
+  color: var(--cross);
+  text-underline-offset: 0.15em;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--you);
+  outline-offset: 2px;
+}
+
+/* Buttons and fields ------------------------------------------------------ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--paper);
+}
+
+.button--primary {
+  border-color: var(--cross);
+  background: var(--cross);
+  color: #fff;
+}
+
+.button--primary:hover {
+  background: #00693e;
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.button svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.location-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.location-form > .button {
+  justify-self: start;
+}
+
+.address-search label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.address-search__row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.address-search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 0.85rem;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.address-search input::placeholder {
+  color: #8a9a91;
+}
+
+.address-search input:hover {
+  border-color: var(--muted);
+}
+
+.fine-print {
+  font-size: 0.875rem;
+  color: var(--muted);
+  max-width: 34rem;
+}
+
+/* Start screen ------------------------------------------------------------ */
+
+.start {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+  padding: 2.5rem 1.25rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.start__content {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 34rem;
+}
+
+.start__title {
+  font-size: clamp(2.6rem, 9vw, 4.5rem);
+  font-weight: 750;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.start__lead {
+  font-size: 1.125rem;
+  color: var(--muted);
+}
+
+.start__sign {
+  --dot: 5px;
+  --ring: 22px;
+  position: relative;
+  order: -1;
+  width: 6.5rem;
+  aspect-ratio: 1;
+}
+
+.sign {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 13%;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--led);
+}
+
+/*
+ * The lit pharmacy cross: an LED matrix whose rings pulse outwards, the way
+ * the street signs do. It is the one decorative moment on the page.
+ */
+@property --pulse {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+.start__sign::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 38%, var(--ink) 39%) 0 0 / var(--dot) var(--dot),
+    repeating-radial-gradient(
+      circle,
+      transparent calc(var(--pulse) - var(--ring)),
+      rgb(15 42 32 / 0.6) calc(var(--pulse) - var(--ring) / 2),
+      transparent var(--pulse)
+    );
+  animation: pulse 2.4s linear infinite;
+}
+
+@keyframes pulse {
+  to {
+    --pulse: var(--ring);
+  }
+}
+
+@media (min-width: 56rem) {
+  .start {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    padding: 3rem 2.5rem;
+  }
+
+  .start__sign {
+    --dot: 9px;
+    --ring: 44px;
+    order: 0;
+    justify-self: center;
+    width: min(100%, 24rem);
+  }
+}
+
+/* Finder: results panel beside the map ------------------------------------ */
+
+.finder {
+  display: flex;
+  flex-direction: column-reverse; /* map above the list on small screens */
+  min-height: 100dvh;
+}
+
+.map {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 40dvh;
+  min-height: 15rem;
+  background: var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: inherit;
+}
+
+.panel {
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem 2rem;
+}
+
+@media (min-width: 56rem) {
+  .finder {
+    flex-direction: row;
+    height: 100dvh;
+  }
+
+  .panel {
+    flex: none;
+    width: var(--panel-width);
+    overflow-y: auto;
+    padding: 1.5rem 1.5rem 2rem;
+    border-right: 1px solid var(--line);
+  }
+
+  .map {
+    position: relative;
+    flex: 1;
+    height: auto;
+    border-bottom: 0;
+  }
+}
+
+.panel__header {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.wordmark__cross {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: var(--cross);
+}
+
+.panel__place {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.panel__place strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.panel__search {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+/* Nearest pharmacy -------------------------------------------------------- */
+
+.nearest {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.25rem;
+  border-radius: calc(var(--radius) + 4px);
+  background: var(--ink);
+  color: #fff;
+  scroll-margin-top: calc(40dvh + 1rem);
+}
+
+.nearest[data-selected='true'] {
+  box-shadow: 0 0 0 3px var(--led);
+}
+
+.nearest__kicker {
+  font-size: 0.9375rem;
+  color: var(--led);
+  font-weight: 600;
+}
+
+.nearest__distance {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.75rem;
+  font-size: clamp(3rem, 14vw, 3.75rem);
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.nearest__walk {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #b9cdc3;
+}
+
+.nearest__name {
+  margin-top: 0.6rem;
+  font-size: 1.375rem;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.nearest__name button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nearest__name button:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.nearest__address {
+  color: #b9cdc3;
+}
+
+.nearest .status {
+  color: #b9cdc3;
+}
+
+.nearest .status--open {
+  color: var(--led);
+}
+
+.nearest .status--closed {
+  color: #ffb4a3;
+}
+
+.nearest .actions {
+  margin-top: 0.9rem;
+}
+
+.nearest .button {
+  border-color: #fff;
+  background: transparent;
+  color: #fff;
+}
+
+.nearest .button:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.nearest .button--primary {
+  border-color: var(--led);
+  background: var(--led);
+  color: var(--ink);
+}
+
+.nearest .button--primary:hover {
+  background: #3bd493;
+}
+
+.nearest :focus-visible {
+  outline-color: #fff;
+}
+
+/* Ranked list ------------------------------------------------------------- */
+
+.list-heading {
+  margin-bottom: -1rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.results {
+  padding: 0;
+  list-style: none;
+}
+
+.result {
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: calc(40dvh + 0.5rem);
+}
+
+.result__summary {
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: start;
+  width: 100%;
+  padding: 0.85rem 0.25rem;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.result__summary:hover .result__name {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.result__rank {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.result[data-selected='true'] .result__rank {
+  background: var(--cross);
+}
+
+.result__text {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.result__name {
+  font-weight: 650;
+}
+
+.result__address,
+.status {
+  font-size: 0.9375rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.status--open {
+  color: var(--cross);
+  font-weight: 600;
+}
+
+.status--closed {
+  color: var(--closed);
+  font-weight: 600;
+}
+
+.result__distance {
+  font-weight: 700;
+  white-space: nowrap;
+  line-height: 1.75rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.result .actions {
+  padding: 0 0.25rem 1rem 2.75rem;
+}
+
+/* Progress, empty and error messages -------------------------------------- */
+
+.live:empty {
+  display: none;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+}
+
+.progress__dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--cross);
+  animation: blink 1s ease-in-out infinite alternate;
+}
+
+@keyframes blink {
+  to {
+    opacity: 0.25;
+  }
+}
+
+.message {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+  padding: 1rem 1.1rem;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.message--error {
+  border-color: var(--closed);
+}
+
+.message h2 {
+  font-size: 1.0625rem;
+  font-weight: 650;
+}
+
+.message p {
+  color: var(--muted);
+}
+
+/* Map markers ------------------------------------------------------------- */
+
+.pin {
+  cursor: pointer;
+}
+
+.pin span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font: 700 0.8125rem/1 'Schibsted Grotesk Variable', system-ui, sans-serif;
+  box-shadow: 0 1px 4px rgb(15 42 32 / 0.45);
+}
+
+.pin--nearest span {
+  background: var(--cross);
+}
+
+.pin--selected {
+  z-index: 1000 !important;
+}
+
+.pin--selected span {
+  outline: 3px solid var(--led);
+  outline-offset: 1px;
+  scale: 1.2;
+}
+
+.you-are-here {
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--you);
+  box-shadow: 0 0 0 6px rgb(31 95 209 / 0.22);
+}
+
+.leaflet-container {
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .start__sign::after,
+  .progress__dot {
+    animation: none;
+  }
+}
