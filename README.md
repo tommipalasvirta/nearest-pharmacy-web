@@ -92,7 +92,8 @@ There are two ways to query OSM, and the app uses both:
 Nominatim returns at most 50 places per search in no useful order, so a full
 response might be missing the nearest pharmacy. A box that comes back full is read
 again as four quarters, and if a quarter is full too, the search radius is halved;
-see `searchNominatim` in [`src/lib/nominatim.ts`](src/lib/nominatim.ts). Asking for
+see `searchNominatim` in [`src/lib/nominatim.ts`](src/lib/nominatim.ts). Those
+requests are spaced a second apart, as Nominatim's usage policy asks. Asking for
 the next page instead does not work: Nominatim's servers number the same place
 differently, so pages from different servers repeat each other.
 
@@ -124,7 +125,7 @@ Other choices:
 - **No backend.** Everything runs in the browser. A production version would put a
   small server in front of the data sources to cache results and stop depending on
   volunteer-run public instances.
-- **The `opening_hours` parser is about 1 MB**, because the tag's grammar is large
+- **The `opening_hours` parser is about 700 kB**, because the tag's grammar is large
   (holidays, week numbers, sunrise). It is loaded on demand after the first results
   arrive, so it does not slow down the first paint. The parser can search forever
   for the next change of some real-world tags, such as a store that is always open

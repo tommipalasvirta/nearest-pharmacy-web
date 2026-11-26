@@ -6,8 +6,9 @@ export default defineConfig({
   base: './',
   plugins: [react()],
   build: {
-    // The lazily loaded opening-hours parser is a single ~690 kB chunk.
-    chunkSizeWarningLimit: 700,
+    // Two chunks are large and loaded only on demand: the opening-hours
+    // parser (~690 kB) and the saved copy of the pharmacies (~750 kB).
+    chunkSizeWarningLimit: 800,
   },
   test: {
     environment: 'node',

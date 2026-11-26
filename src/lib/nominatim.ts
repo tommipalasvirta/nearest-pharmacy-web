@@ -7,9 +7,10 @@ import { normalizeUrl } from './url'
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org'
 const REQUEST_TIMEOUT_MS = 10_000
 
-/** The most places Nominatim returns for one search. */
 /** The most places Nominatim returns for one search, whatever limit is asked for. */
 const RESULT_LIMIT = 50
+/** Nominatim's usage policy asks for no more than one request a second. */
+const REQUEST_SPACING_MS = 1_000
 const SMALLEST_SEARCH_RADIUS_METERS = 200
 const METERS_PER_DEGREE_LATITUDE = (Math.PI * EARTH_RADIUS_METERS) / 180
 /** Keeps the box safely outside the circle despite coordinate rounding. */
@@ -79,10 +80,29 @@ export async function reverseGeocode(position: Coordinates, signal?: AbortSignal
  * so a full response may be missing the nearest pharmacy. A box that comes
  * back full is read again as four quarters. If a quarter is full too, the
  * radius is halved; the result then reports the smaller radius it covered.
+ * These requests are spaced a second apart, as Nominatim's usage policy asks.
  */
 export const searchNominatim: PharmacySource = async (origin, requestedRadius, { signal, fetchFn }) => {
+  const search = spacedOut(
+    (area: Box) =>
+      getJson<NominatimPlace[]>(
+        '/search',
+        {
+          amenity: 'pharmacy',
+          viewbox: [area.west, area.north, area.east, area.south].map((value) => value.toFixed(6)).join(','),
+          bounded: '1',
+          extratags: '1',
+          namedetails: '1',
+          limit: String(RESULT_LIMIT),
+        },
+        signal,
+        fetchFn,
+      ),
+    signal,
+  )
+
   for (let radiusMeters = requestedRadius; ; radiusMeters /= 2) {
-    const { places, isComplete } = await listPharmacies(boundingBox(origin, radiusMeters), signal, fetchFn)
+    const { places, isComplete } = await listPharmacies(boundingBox(origin, radiusMeters), search)
     if (isComplete || radiusMeters <= SMALLEST_SEARCH_RADIUS_METERS) {
       // The box's corners reach beyond the radius; only the circle is complete.
       const pharmacies = toPharmacies(places, origin).filter((p) => p.distanceMeters <= radiusMeters)
@@ -94,28 +114,11 @@ export const searchNominatim: PharmacySource = async (origin, requestedRadius, {
 /** The pharmacies in a box. `isComplete` is false when there are too many to list. */
 async function listPharmacies(
   box: Box,
-  signal: AbortSignal,
-  fetchFn: typeof fetch | undefined,
+  search: (area: Box) => Promise<NominatimPlace[]>,
 ): Promise<{ places: NominatimPlace[]; isComplete: boolean }> {
-  const search = (area: Box) =>
-    getJson<NominatimPlace[]>(
-      '/search',
-      {
-        amenity: 'pharmacy',
-        viewbox: [area.west, area.north, area.east, area.south].map((value) => value.toFixed(6)).join(','),
-        bounded: '1',
-        extratags: '1',
-        namedetails: '1',
-        limit: String(RESULT_LIMIT),
-      },
-      signal,
-      fetchFn,
-    )
-
   const whole = await search(box)
   if (whole.length < RESULT_LIMIT) return { places: whole, isComplete: true }
 
-  // One at a time: Nominatim's usage policy asks for no more than a request a second.
   const places: NominatimPlace[] = []
   for (const quarter of quarters(box)) {
     const part = await search(quarter)
@@ -158,6 +161,30 @@ export interface Box {
   east: number
   north: number
 }
+
+/** Wraps `request` so that successive calls start at least a second apart. */
+function spacedOut<Input, Output>(request: (input: Input) => Promise<Output>, signal: AbortSignal) {
+  let earliestStart = 0
+  return async (input: Input) => {
+    const wait = earliestStart - Date.now()
+    if (wait > 0) await pause(wait, signal)
+    earliestStart = Date.now() + REQUEST_SPACING_MS
+    return request(input)
+  }
+}
+
+const pause = (milliseconds: number, signal: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, milliseconds)
+    signal.addEventListener(
+      'abort',
+      () => {
+        clearTimeout(timer)
+        reject(signal.reason)
+      },
+      { once: true },
+    )
+  })
 
 /** A box that contains the circle around `center`. */
 export function boundingBox(center: Coordinates, radiusMeters: number): Box {

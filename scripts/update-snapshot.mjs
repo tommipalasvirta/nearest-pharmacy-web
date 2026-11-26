@@ -12,7 +12,6 @@ const OUTPUT = new URL('../src/data/nordic-pharmacies.json', import.meta.url)
 const SERVERS = [
   'https://overpass-api.de/api/interpreter',
   'https://overpass.openstreetmap.fr/api/interpreter',
-  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
 ]
 
 /** The tags the app reads; everything else is dropped to keep the file small. */

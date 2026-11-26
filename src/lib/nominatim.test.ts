@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { haversineMeters } from './geo'
 import { boundingBox, searchNominatim, toPharmacies, type NominatimPlace } from './nominatim'
 import { context, HELSINKI, jsonResponse, north } from '../test/fixtures'
@@ -59,10 +59,20 @@ describe('toPharmacies', () => {
 })
 
 describe('searchNominatim', () => {
+  // The search waits a second between its requests.
+  beforeEach(() => void vi.useFakeTimers())
+  afterEach(() => void vi.useRealTimers())
+
+  const search = async (radiusMeters: number, fetchFn: typeof fetch) => {
+    const result = searchNominatim(HELSINKI, radiusMeters, context(fetchFn))
+    await vi.runAllTimersAsync()
+    return result
+  }
+
   it('keeps only pharmacies inside the circle, not the corners of the box', async () => {
     const inCorner = place(2, 0.012, { lon: String(HELSINKI.lon + 0.02) }) // ~1.7 km away
     const fetchFn = vi.fn<typeof fetch>(async () => jsonResponse([place(1, 0.005), inCorner]))
-    const result = await searchNominatim(HELSINKI, 1500, context(fetchFn))
+    const result = await search(1500, fetchFn)
     expect(result.pharmacies.map((p) => p.id)).toEqual(['node/1'])
     expect(result.radiusMeters).toBe(1500)
   })
@@ -77,7 +87,7 @@ describe('searchNominatim', () => {
       .mockResolvedValueOnce(jsonResponse([...full.slice(30), onTheLine]))
       .mockResolvedValueOnce(jsonResponse([place(61, -0.01)]))
       .mockResolvedValueOnce(jsonResponse([place(62, -0.02)]))
-    const result = await searchNominatim(HELSINKI, 5000, context(fetchFn))
+    const result = await search(5000, fetchFn)
 
     const viewboxes = fetchFn.mock.calls.map(([url]) => new URL(String(url)).searchParams.get('viewbox')!.split(',').map(Number))
     const [west, north, east, south] = viewboxes[0]
@@ -97,10 +107,23 @@ describe('searchNominatim', () => {
       .mockResolvedValueOnce(jsonResponse(full))
       .mockResolvedValueOnce(jsonResponse(full))
       .mockResolvedValueOnce(jsonResponse(full.slice(0, 12)))
-    const result = await searchNominatim(HELSINKI, 5000, context(fetchFn))
+    const result = await search(5000, fetchFn)
 
     expect(fetchFn).toHaveBeenCalledTimes(3)
     expect(result.radiusMeters).toBe(2500)
     expect(result.pharmacies).toHaveLength(12)
+  })
+
+  it('leaves a second between its requests, as the usage policy asks', async () => {
+    const full = Array.from({ length: 50 }, (_, i) => place(i + 1, 0.0001 * (i + 1)))
+    const startedAt: number[] = []
+    const fetchFn = vi.fn<typeof fetch>(async () => {
+      startedAt.push(Date.now())
+      return jsonResponse(startedAt.length === 1 ? full : [])
+    })
+    await search(5000, fetchFn)
+
+    const gaps = startedAt.slice(1).map((time, index) => time - startedAt[index])
+    expect(gaps).toEqual([1000, 1000, 1000, 1000])
   })
 })
