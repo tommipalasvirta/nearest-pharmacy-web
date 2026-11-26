@@ -2,13 +2,19 @@ import { describe, expect, it } from 'vitest'
 import { context, HELSINKI } from '../test/fixtures'
 import { searchSnapshot } from './snapshot'
 
+const COPENHAGEN = { lat: 55.6761, lon: 12.5683 }
+const BERLIN = { lat: 52.52, lon: 13.405 }
+
 const offline = context(async () => {
   throw new TypeError('Failed to fetch')
 })
 
 describe('searchSnapshot', () => {
-  it('lists the saved pharmacies around a point in Helsinki without the network', async () => {
-    const result = await searchSnapshot(HELSINKI, 5_000, offline)
+  it.each([
+    ['Helsinki', HELSINKI],
+    ['Copenhagen', COPENHAGEN],
+  ])('lists the saved pharmacies around a point in %s without the network', async (_city, origin) => {
+    const result = await searchSnapshot(origin, 5_000, offline)
 
     expect(result.radiusMeters).toBe(5_000)
     expect(result.savedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/)
@@ -17,15 +23,13 @@ describe('searchSnapshot', () => {
     expect(result.pharmacies[0]).toMatchObject({ id: expect.stringMatching(/^(node|way|relation)\/\d+$/) })
   })
 
-  it('covers no further than the edge of the saved region', async () => {
-    // Central Helsinki is about 7 km from the southern edge, out at sea.
-    const result = await searchSnapshot(HELSINKI, 50_000, offline)
-    expect(result.radiusMeters).toBeGreaterThan(5_000)
-    expect(result.radiusMeters).toBeLessThan(10_000)
+  it('finds nothing where the countryside has no pharmacy in range', async () => {
+    const lakeInari = { lat: 69.05, lon: 27.9 }
+    const result = await searchSnapshot(lakeInari, 5_000, offline)
+    expect(result.pharmacies).toEqual([])
   })
 
-  it('has nothing to offer outside the Helsinki region', async () => {
-    const tampere = { lat: 61.4978, lon: 23.761 }
-    await expect(searchSnapshot(tampere, 5_000, offline)).rejects.toThrow('Helsinki region')
+  it('has nothing to offer outside the Nordic countries', async () => {
+    await expect(searchSnapshot(BERLIN, 50_000, offline)).rejects.toThrow('Nordic countries')
   })
 })

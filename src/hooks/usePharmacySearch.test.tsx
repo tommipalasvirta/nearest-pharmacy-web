@@ -2,7 +2,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getDevicePosition } from '../lib/geolocation'
-import { geocodeAddress, reverseGeocode } from '../lib/nominatim'
+import { geocodeAddress, reverseGeocode } from '../lib/geocoding'
 import { evaluateOpeningHours, type OpenStatus } from '../lib/openingHours'
 import { rankByWalkingDistance } from '../lib/routing'
 import { findNearbyPharmacies, type SearchResult } from '../lib/search'
@@ -12,7 +12,7 @@ import { HELSINKI, north } from '../test/fixtures'
 import { usePharmacySearch } from './usePharmacySearch'
 
 vi.mock('../lib/geolocation', { spy: true })
-vi.mock('../lib/nominatim', { spy: true })
+vi.mock('../lib/geocoding', { spy: true })
 vi.mock('../lib/openingHours', { spy: true })
 vi.mock('../lib/routing', { spy: true })
 vi.mock('../lib/search', { spy: true })

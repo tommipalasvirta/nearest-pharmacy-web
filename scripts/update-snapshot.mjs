@@ -1,12 +1,12 @@
-// Saves a copy of every pharmacy in the Helsinki region from OpenStreetMap to
-// src/data/helsinki-region.json. The app falls back on it when no live source
+// Saves a copy of every pharmacy in the Nordic countries from OpenStreetMap to
+// src/data/nordic-pharmacies.json. The app falls back on it when no live source
 // answers (see src/lib/snapshot.ts). Run with: npm run snapshot
 import { writeFileSync } from 'node:fs'
 
-const AREA = 'Helsinki region'
-/** Helsinki, Espoo, Vantaa and Kauniainen. */
-const BOUNDS = { south: 60.1, west: 24.5, north: 60.42, east: 25.26 }
-const OUTPUT = new URL('../src/data/helsinki-region.json', import.meta.url)
+const AREA = 'Nordic countries'
+/** ISO 3166-1 codes: Denmark, Finland, Iceland, Norway and Sweden. */
+const COUNTRIES = ['DK', 'FI', 'IS', 'NO', 'SE']
+const OUTPUT = new URL('../src/data/nordic-pharmacies.json', import.meta.url)
 
 /** Public Overpass servers, tried in order. */
 const SERVERS = [
@@ -30,8 +30,7 @@ const KEPT_TAGS = [
   'opening_hours',
 ]
 
-const { south, west, north, east } = BOUNDS
-const query = `[out:json][timeout:60];nwr["amenity"="pharmacy"](${south},${west},${north},${east});out center tags;`
+const query = `[out:json][timeout:240];area["ISO3166-1"~"^(${COUNTRIES.join('|')})$"]["admin_level"="2"]->.countries;nwr["amenity"="pharmacy"](area.countries);out center tags;`
 
 async function download() {
   for (const server of SERVERS) {
@@ -41,7 +40,7 @@ async function download() {
         body: new URLSearchParams({ data: query }),
         // Some servers turn away requests that do not say what they are.
         headers: { 'User-Agent': 'pharmacy-snapshot-script/1.0' },
-        signal: AbortSignal.timeout(90_000),
+        signal: AbortSignal.timeout(300_000),
       })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const { elements, remark } = await response.json()
@@ -64,6 +63,8 @@ const elements = (await download())
   }))
   .sort((a, b) => a.type.localeCompare(b.type) || a.id - b.id)
 
-const snapshot = { area: AREA, savedOn: new Date().toISOString().slice(0, 10), bounds: BOUNDS, elements }
-writeFileSync(OUTPUT, `${JSON.stringify(snapshot, null, 1)}\n`)
+// One pharmacy per line keeps the file small and its diffs readable.
+const header = { area: AREA, countries: COUNTRIES, savedOn: new Date().toISOString().slice(0, 10) }
+const lines = elements.map((element) => ` ${JSON.stringify(element)}`).join(',\n')
+writeFileSync(OUTPUT, `${JSON.stringify(header).slice(0, -1)},"elements":[\n${lines}\n]}\n`)
 console.log(`Saved ${elements.length} pharmacies in the ${AREA}`)

@@ -47,6 +47,10 @@ interface Network {
 function stubNetwork({ overpass, geocode }: Network = {}) {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input)
+    if (url.includes('photon')) {
+      const properties = { street: 'Mannerheimintie', housenumber: '5', district: 'Kluuvi', city: 'Helsinki', countrycode: 'FI' }
+      return jsonResponse({ features: [{ geometry: { coordinates: [24.9384, 60.1699] }, properties }] })
+    }
     if (url.includes('overpass')) return overpass?.() ?? jsonResponse({ elements: OVERPASS_PHARMACIES })
     if (url.includes('/reverse')) {
       return jsonResponse({
@@ -81,7 +85,7 @@ function stubNetwork({ overpass, geocode }: Network = {}) {
   return fetchMock
 }
 
-const TAMPERE = { lat: 61.4978, lon: 23.761 }
+const BERLIN = { lat: 52.52, lon: 13.405 }
 
 const useMyLocation = () => userEvent.click(screen.getByRole('button', { name: 'Use my location' }))
 
@@ -263,8 +267,8 @@ describe('when something goes wrong', () => {
   })
 
   it('lets the search be retried after a network failure', async () => {
-    // Outside the Helsinki region, so there is no saved copy to fall back on.
-    stubGeolocation(TAMPERE)
+    // Outside the Nordic countries, so there is no saved copy to fall back on.
+    stubGeolocation(BERLIN)
     let online = false
     const fetchMock = stubNetwork()
     const respond = fetchMock.getMockImplementation()!
@@ -284,19 +288,33 @@ describe('when something goes wrong', () => {
   })
 })
 
-describe('when the live data sources are down', () => {
-  it('shows the saved copy of the Helsinki region, and says so', async () => {
+describe('when Overpass and Nominatim are down', () => {
+  beforeEach(() => {
     const fetchMock = stubNetwork()
     const respond = fetchMock.getMockImplementation()!
     fetchMock.mockImplementation(async (input) => {
       if (/overpass|nominatim/.test(String(input))) throw new TypeError('Failed to fetch')
       return respond(input)
     })
+  })
+
+  it('shows the saved copy of the pharmacies, and says so', async () => {
     render(<App />)
     await useMyLocation()
 
     expect(await screen.findByText('Nearest to you')).toBeVisible()
     expect(screen.getByText(/Showing a copy saved on \d+ \w+ \d{4}/)).toBeVisible()
+  })
+
+  it('still finds a typed address, with the second geocoder', async () => {
+    render(<App />)
+
+    await userEvent.type(screen.getByRole('searchbox'), 'Mannerheimintie 5')
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }))
+
+    expect(await screen.findByText('Nearest to you')).toBeVisible()
+    expect(screen.getByRole('searchbox')).toHaveValue('Mannerheimintie 5, Helsinki')
+    expect(screen.getByText(/Showing a copy saved on/)).toBeVisible()
   })
 })
 

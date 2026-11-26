@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { GeolocationError, getDevicePosition } from '../lib/geolocation'
-import { geocodeAddress, reverseGeocode } from '../lib/nominatim'
+import { geocodeAddress, reverseGeocode } from '../lib/geocoding'
 import { evaluateOpeningHours, type OpenStatus, type Region } from '../lib/openingHours'
 import { rankByWalkingDistance } from '../lib/routing'
 import { findNearbyPharmacies } from '../lib/search'

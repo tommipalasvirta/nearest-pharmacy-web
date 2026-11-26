@@ -67,7 +67,7 @@ export interface SearchResult {
  * the same search also runs against Nominatim and whichever finishes first wins.
  *
  * If neither has answered after a longer wait, or both fail, a copy of the
- * Helsinki region saved in the repository is used, where it covers the place.
+ * Nordic countries saved in the repository is used, where it covers the place.
  */
 export function findNearbyPharmacies(
   origin: Coordinates,

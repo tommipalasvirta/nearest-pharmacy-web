@@ -38,12 +38,13 @@ Other commands:
 | `npm run build` | Type-checks and builds to `dist/` |
 | `npm run preview` | Serves the production build locally |
 | `npm run lint` | Lints with oxlint |
-| `npm run snapshot` | Refreshes the saved copy of the Helsinki region's pharmacies |
+| `npm run snapshot` | Refreshes the saved copy of the Nordic countries' pharmacies |
 
 ## How it works
 
-1. **Where you are.** The browser Geolocation API, or an address geocoded with
-   Nominatim when location sharing is declined or unavailable.
+1. **Where you are.** The browser Geolocation API, or a typed address when location
+   sharing is declined or unavailable. Addresses are geocoded with Nominatim, and
+   with Photon when Nominatim is slow or down.
 2. **What is nearby.** Every OpenStreetMap object tagged `amenity=pharmacy` within a
    radius, up to the 100 nearest. The radius starts at 5 km, enough to cover a town,
    and widens to 15 and 50 km until there are at least five results, so a rural area
@@ -95,11 +96,16 @@ see `searchNominatim` in [`src/lib/nominatim.ts`](src/lib/nominatim.ts). Asking 
 the next page instead does not work: Nominatim's servers number the same place
 differently, so pages from different servers repeat each other.
 
-As a last resort there is a **saved copy of the Helsinki region's pharmacies** in
-the repository ([`src/data/helsinki-region.json`](src/data/helsinki-region.json),
-119 pharmacies, a 33 kB chunk downloaded only when needed). It is used when both live
-sources fail, or when neither has answered within 8 seconds, and the app then says
-which day the copy is from. `npm run snapshot` refreshes it from Overpass.
+As a last resort there is a **saved copy of the Nordic countries' pharmacies** in the
+repository ([`src/data/nordic-pharmacies.json`](src/data/nordic-pharmacies.json):
+3,632 pharmacies in Denmark, Finland, Iceland, Norway and Sweden, a 160 kB chunk
+after compression, downloaded only when needed). It is used when both live sources
+fail, or when neither has answered within 8 seconds, and the app then says which day
+the copy is from. With it, the app answers anywhere in those countries even when
+every public pharmacy source is down. `npm run snapshot` refreshes it from Overpass.
+
+Address search has a backup of its own: **Photon**, a second public geocoder built
+on OSM data, is asked when Nominatim fails or takes longer than 2 seconds.
 
 Walking distances and routes come from the two public routers behind the directions
 on openstreetmap.org, both run by FOSSGIS on OSM data. **Valhalla** is asked first.
@@ -137,7 +143,9 @@ src/
     hedge.ts              "First source to answer wins", with a head start
     overpass.ts           Overpass source
     nominatim.ts          Nominatim source, geocoding, reverse geocoding
-    snapshot.ts           Saved copy of the Helsinki region, the last resort
+    photon.ts             Photon geocoding
+    geocoding.ts          Address search: Nominatim first, Photon as backup
+    snapshot.ts           Saved copy of the Nordic countries, the last resort
     routing.ts            Walking distances and routes (Valhalla, OSRM)
     openingHours.ts       Open/closed status from the OSM tag, in local time
     geolocation.ts        Promise wrapper for the Geolocation API
@@ -158,16 +166,18 @@ scripts/
 
 - Results are only as good as OpenStreetMap is locally. A pharmacy missing from OSM
   is missing here, and opening hours are shown only where someone has mapped them.
-- The app relies on free public servers (Overpass, Nominatim, the two routers, OSM
-  tiles) that have usage policies and occasional outages. Each one has a fallback
+- The app relies on free public servers (Overpass, Nominatim, Photon, the two
+  routers, OSM tiles) that have usage policies and occasional outages. Each one has a fallback
   or a degraded mode, but this is fine for a demo and light use, not for production
   traffic.
 - At most the 100 pharmacies nearest in a straight line are shown, within the
   radius searched. In a very dense city that is less than the full 5 km, and more
   so when Nominatim is the source that answers.
-- The saved copy covers the Helsinki region only and is as old as its date. Address
-  search still needs Nominatim, so with every live source down only "Use my
-  location" works.
+- The saved copy covers the Nordic countries only and is as old as its date. Close
+  to a border with another country it lacks the pharmacies on the other side.
+  Elsewhere in the world the app needs a live source.
+- Address search needs one of the two geocoders, and the map needs the OSM tile
+  server. Neither has an offline copy.
 - The "Open now" filter narrows the pharmacies already found. It does not search
   further afield for an open one, and it hides pharmacies whose hours are not
   mapped, because they cannot be promised to be open.
