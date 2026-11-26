@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { LocateIcon } from './Icons'
 
 interface Props {
   onLocate: () => void
@@ -19,15 +20,7 @@ export function LocationForm({ onLocate, onSearchAddress, busy }: Props) {
   return (
     <div className="location-form">
       <button type="button" className="button button--primary" onClick={onLocate} disabled={busy}>
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinejoin="round"
-            d="M21 3 3 10.5l7.5 3L13.5 21z"
-          />
-        </svg>
+        <LocateIcon />
         Use my location
       </button>
 

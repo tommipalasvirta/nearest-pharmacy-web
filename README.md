@@ -51,9 +51,12 @@ Other commands:
 4. **Opening hours.** The OSM `opening_hours` tag is evaluated for the current time,
    including public holidays for the country you are in.
 
-The nearest pharmacy is shown first, with its distance, an estimated walking time
-and a directions link. The numbered pins on the map match the ranks in the list, and
-selecting either one highlights the other.
+The map fills the screen and the answer floats over it. The nearest pharmacy comes
+first, with its distance, an estimated walking time and a directions link, and a
+dotted line on the map runs from you to it. The numbered pins match the ranks in the
+list, and selecting either one highlights the other. On a phone the results sit in a
+sheet under the map: the nearest pharmacy is always visible and the rest of the list
+opens on demand.
 
 Every state has its own screen: locating, searching, location blocked, location
 unavailable, address not found, no pharmacies in range, and network failure with a
@@ -87,6 +90,9 @@ Other choices:
 
 - **React, TypeScript and Vite**, with Leaflet for the map. Leaflet is used directly
   through a ref rather than through a wrapper library; the map needs three effects.
+- **Layout.** The first version had the list in a side panel next to the map. I put
+  that screen on a [Superdesign](https://superdesign.dev) canvas with two alternative
+  layouts and went with the map-first one, since the map is what you navigate by.
 - **No backend.** Everything runs in the browser. A production version would put a
   small server in front of the data sources to cache results and stop depending on
   volunteer-run public instances.
@@ -107,8 +113,8 @@ src/
     geolocation.ts        Promise wrapper for the Geolocation API
   hooks/
     usePharmacySearch.ts  The search flow as one state machine
-  components/             Map, ranked list, location form, status messages
-  App.tsx                 Start screen and the list-plus-map layout
+  components/             Map, search bar, results sheet, status messages
+  App.tsx                 Start screen and the map-first results layout
 ```
 
 ## Known limitations

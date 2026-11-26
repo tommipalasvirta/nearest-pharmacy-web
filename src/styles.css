@@ -12,7 +12,8 @@
   --you: #1f5fd1;
 
   --radius: 10px;
-  --panel-width: 27.5rem;
+  --panel-width: 25rem;
+  --float-shadow: 0 4px 14px rgb(15 42 32 / 0.2);
 
   font-family: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 100%;
@@ -241,104 +242,182 @@ input {
   }
 }
 
-/* Finder: results panel beside the map ------------------------------------ */
+/* Finder: results floating over a full-bleed map --------------------------- */
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * Phones: the map fills the space above the results sheet, and the search bar
+ * floats over the map. Wide screens: the map fills the viewport and the search
+ * bar and results float over it as one column (see the media query below).
+ */
 .finder {
+  position: relative;
   display: flex;
-  flex-direction: column-reverse; /* map above the list on small screens */
-  min-height: 100dvh;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .map {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  height: 40dvh;
-  min-height: 15rem;
+  flex: 1;
+  min-height: 0;
+  isolation: isolate; /* keeps Leaflet's z-indexes below the floating UI */
   background: var(--line);
-  border-bottom: 1px solid var(--line);
   font-family: inherit;
 }
 
-.panel {
-  flex: 1;
+.overlay {
+  display: contents;
+}
+
+.overlay__search {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
   display: grid;
-  align-content: start;
-  gap: 1.25rem;
-  padding: 1rem 1.25rem 2rem;
+  gap: 0.5rem;
+}
+
+.sheet {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  max-height: 78dvh;
+  margin-top: -0.875rem; /* the sheet's rounded top overlaps the map */
+  border-radius: calc(var(--radius) + 4px) calc(var(--radius) + 4px) 0 0;
+  background: var(--surface);
+  box-shadow: var(--float-shadow);
+}
+
+/* Keep the map's attribution and zoom buttons clear of that overlap. */
+.finder .leaflet-bottom {
+  bottom: 0.875rem;
 }
 
 @media (min-width: 56rem) {
-  .finder {
-    flex-direction: row;
-    height: 100dvh;
-  }
-
-  .panel {
-    flex: none;
-    width: var(--panel-width);
-    overflow-y: auto;
-    padding: 1.5rem 1.5rem 2rem;
-    border-right: 1px solid var(--line);
-  }
-
   .map {
-    position: relative;
-    flex: 1;
-    height: auto;
-    border-bottom: 0;
+    position: absolute;
+    inset: 0;
+  }
+
+  .finder .leaflet-bottom {
+    bottom: 0;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: calc(var(--panel-width) + 2rem);
+    padding: 1rem;
+    pointer-events: none; /* the map stays draggable in the gaps */
+  }
+
+  .overlay > * {
+    pointer-events: auto;
+  }
+
+  .overlay__search {
+    position: static;
+    flex: none;
+  }
+
+  .sheet {
+    flex: 0 1 auto;
+    gap: 0.75rem;
+    min-height: 0;
+    max-height: none;
+    margin-top: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
   }
 }
 
-.panel__header {
-  display: grid;
-  gap: 0.25rem;
-}
+/* Search bar -------------------------------------------------------------- */
 
-.wordmark {
+.search-bar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  gap: 0.25rem;
+  padding: 0.375rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--float-shadow);
 }
 
-.wordmark__cross {
-  width: 1.15rem;
-  height: 1.15rem;
+.search-bar input {
+  flex: 1;
+  min-width: 0;
+  height: 2.75rem;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: calc(var(--radius) - 3px);
+  background: none;
+}
+
+.search-bar input::placeholder {
+  color: #8a9a91;
+}
+
+.icon-button {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: calc(var(--radius) - 3px);
+  background: var(--paper);
   color: var(--cross);
+  cursor: pointer;
 }
 
-.panel__place {
-  font-size: 0.9375rem;
-  color: var(--muted);
+.icon-button:hover {
+  background: var(--line);
 }
 
-.panel__place strong {
-  color: var(--ink);
-  font-weight: 600;
+.icon-button:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
-.panel__search {
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--line);
+.icon-button svg {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 /* Nearest pharmacy -------------------------------------------------------- */
 
 .nearest {
   display: grid;
-  gap: 0.35rem;
-  padding: 1.25rem;
+  flex: none;
+  gap: 0.3rem;
+  padding: 1.1rem 1.25rem 1.25rem;
   border-radius: calc(var(--radius) + 4px);
   background: var(--ink);
   color: #fff;
-  scroll-margin-top: calc(40dvh + 1rem);
 }
 
 .nearest[data-selected='true'] {
-  box-shadow: 0 0 0 3px var(--led);
+  box-shadow: inset 0 0 0 3px var(--led);
 }
 
 .nearest__kicker {
@@ -352,7 +431,7 @@ input {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0 0.75rem;
-  font-size: clamp(3rem, 14vw, 3.75rem);
+  font-size: clamp(2.75rem, 13vw, 3.75rem);
   font-weight: 750;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -366,7 +445,7 @@ input {
 }
 
 .nearest__name {
-  margin-top: 0.6rem;
+  margin-top: 0.5rem;
   font-size: 1.375rem;
   font-weight: 650;
   line-height: 1.2;
@@ -405,7 +484,7 @@ input {
 }
 
 .nearest .actions {
-  margin-top: 0.9rem;
+  margin-top: 0.8rem;
 }
 
 .nearest .button {
@@ -434,11 +513,100 @@ input {
 
 /* Ranked list ------------------------------------------------------------- */
 
-.list-heading {
-  margin-bottom: -1rem;
+.list-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--surface);
+}
+
+.list-card__heading {
+  flex: none;
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--muted);
+}
+
+/* Phones: the heading is the button that opens and closes the list. */
+.list-card__title {
+  display: none;
+}
+
+.list-card__toggle {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0 1.25rem;
+  border: 0;
+  background: none;
+  color: var(--cross);
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+
+.list-card__toggle::after {
+  content: '';
+  float: right;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-top: 0.3rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  rotate: -135deg;
+  translate: 0 0.2rem;
+}
+
+.list-card[data-open='true'] .list-card__toggle::after {
+  rotate: 45deg;
+  translate: 0 -0.1rem;
+}
+
+.list-card__scroll {
+  display: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-top: 1px solid var(--line);
+}
+
+.list-card[data-open='true'] .list-card__scroll {
+  display: block;
+}
+
+.list-card .fine-print {
+  padding: 0.85rem 1.25rem 1rem;
+}
+
+@media (min-width: 56rem) {
+  .nearest,
+  .list-card {
+    box-shadow: var(--float-shadow);
+  }
+
+  .nearest[data-selected='true'] {
+    box-shadow:
+      inset 0 0 0 3px var(--led),
+      var(--float-shadow);
+  }
+
+  .list-card {
+    flex: 0 1 auto;
+    overflow: hidden;
+    border-radius: calc(var(--radius) + 4px);
+  }
+
+  /* Wide screens: the list is always open, under a plain heading. */
+  .list-card__title {
+    display: block;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .list-card__toggle {
+    display: none;
+  }
+
+  .list-card__scroll {
+    display: block;
+  }
 }
 
 .results {
@@ -448,7 +616,6 @@ input {
 
 .result {
   border-bottom: 1px solid var(--line);
-  scroll-margin-top: calc(40dvh + 0.5rem);
 }
 
 .result__summary {
@@ -457,16 +624,19 @@ input {
   gap: 0.75rem;
   align-items: start;
   width: 100%;
-  padding: 0.85rem 0.25rem;
+  padding: 0.85rem 1.25rem;
   border: 0;
   background: none;
   text-align: left;
   cursor: pointer;
 }
 
-.result__summary:hover .result__name {
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
+.result__summary:hover {
+  background: var(--paper);
+}
+
+.result__summary:focus-visible {
+  outline-offset: -3px;
 }
 
 .result__rank {
@@ -479,6 +649,10 @@ input {
   color: #fff;
   font-size: 0.8125rem;
   font-weight: 700;
+}
+
+.result[data-selected='true'] {
+  background: var(--paper);
 }
 
 .result[data-selected='true'] .result__rank {
@@ -524,13 +698,22 @@ input {
 }
 
 .result .actions {
-  padding: 0 0.25rem 1rem 2.75rem;
+  padding: 0 1.25rem 1rem 3.75rem;
 }
 
 /* Progress, empty and error messages -------------------------------------- */
 
 .live:empty {
   display: none;
+}
+
+/* Over the map, messages are cards of their own. */
+.overlay .progress,
+.overlay .message {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--float-shadow);
 }
 
 .progress {
@@ -598,6 +781,7 @@ input {
 
 .pin--nearest span {
   background: var(--cross);
+  font-size: 0.9375rem;
 }
 
 .pin--selected {
@@ -608,6 +792,14 @@ input {
   outline: 3px solid var(--led);
   outline-offset: 1px;
   scale: 1.2;
+}
+
+.walking-line {
+  stroke: var(--you);
+  stroke-width: 4;
+  stroke-dasharray: 1 9;
+  stroke-linecap: round;
+  fill: none;
 }
 
 .you-are-here {
