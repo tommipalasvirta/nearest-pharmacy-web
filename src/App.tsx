@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { CheckIcon } from './components/Icons'
 import { LocationForm } from './components/LocationForm'
 import { MapView, type MapInsets } from './components/MapView'
 import { PharmacyCross } from './components/PharmacyCross'
@@ -115,22 +114,6 @@ export default function App() {
             onSearchAddress={searchAddress}
             busy={busy}
           />
-          {results && (
-            <button
-              type="button"
-              className="chip"
-              aria-pressed={openOnly}
-              onClick={() => setOpenOnly(!openOnly)}
-            >
-              {openOnly && <CheckIcon />}
-              Open now
-              {openOnly && (
-                <span className="chip__count">
-                  {pharmacies.length} of {found.length}
-                </span>
-              )}
-            </button>
-          )}
           {status}
           {results && pharmacies.length === 0 && (
             <div className="message" role="status">
@@ -151,7 +134,9 @@ export default function App() {
             pharmacies={pharmacies}
             origin={results.origin}
             openStatuses={results.openStatuses}
+            totalCount={found.length}
             openOnly={openOnly}
+            onToggleOpenOnly={() => setOpenOnly(!openOnly)}
             savedOn={results.savedOn}
             selectedId={selectedId}
             onSelect={toggleSelected}

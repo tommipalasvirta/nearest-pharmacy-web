@@ -2,14 +2,18 @@ import { useEffect, useState } from 'react'
 import { formatDistance } from '../lib/geo'
 import type { OpenStatus } from '../lib/openingHours'
 import { travelMeters, type Origin, type Pharmacy } from '../lib/types'
+import { CheckIcon } from './Icons'
 import { OpenStatusLine, PharmacyActions } from './PharmacyDetails'
 
 interface Props {
   pharmacies: Pharmacy[]
   origin: Origin
   openStatuses: Map<string, OpenStatus>
+  /** How many pharmacies were found, before the "Open now" filter. */
+  totalCount: number
   /** Whether the list has been narrowed to pharmacies that are open now. */
   openOnly: boolean
+  onToggleOpenOnly: () => void
   /** Set when live data was unavailable: the ISO date of the saved copy being shown. */
   savedOn?: string
   selectedId: string | null
@@ -35,7 +39,9 @@ export function PharmacyList({
   pharmacies,
   origin,
   openStatuses,
+  totalCount,
   openOnly,
+  onToggleOpenOnly,
   savedOn,
   selectedId,
   onSelect,
@@ -45,7 +51,8 @@ export function PharmacyList({
 
   // Tapping a pin for one of the other pharmacies opens the list to show it.
   const selectedOther = selectedId !== null && selectedId !== nearest.id
-  const listOpen = listOpened || selectedOther
+  // With nothing else to list, the card is only there to hold the filter.
+  const listOpen = listOpened || selectedOther || others.length === 0
 
   const toggleList = () => {
     if (selectedOther) onSelect(selectedId) // closing the list also deselects its row
@@ -87,54 +94,64 @@ export function PharmacyList({
         </p>
       )}
 
-      {others.length > 0 && (
+      {(others.length > 0 || openOnly) && (
         <section className="list-card" data-open={listOpen} aria-labelledby="others-heading">
-          <h2 className="list-card__heading" id="others-heading">
-            <span className="list-card__title">{openOnly ? 'Also open now' : 'Other pharmacies nearby'}</span>
-            <button
-              type="button"
-              className="list-card__toggle"
-              aria-expanded={listOpen}
-              aria-controls="other-pharmacies"
-              onClick={toggleList}
-            >
-              {listOpen
-                ? 'Hide other pharmacies'
-                : `Show ${others.length} more ${openOnly ? 'open now' : 'nearby'}`}
+          <div className="list-card__heading">
+            <h2 className="list-card__title" id="others-heading">
+              {openOnly ? `${pharmacies.length} of ${totalCount} open now` : 'Other pharmacies nearby'}
+            </h2>
+            {others.length > 0 && (
+              <button
+                type="button"
+                className="list-card__toggle"
+                aria-expanded={listOpen}
+                aria-controls="other-pharmacies"
+                onClick={toggleList}
+              >
+                {listOpen ? 'Hide list' : `Show ${others.length} more ${openOnly ? 'open now' : 'nearby'}`}
+              </button>
+            )}
+            <button type="button" className="chip" aria-pressed={openOnly} onClick={onToggleOpenOnly}>
+              {openOnly && <CheckIcon />}
+              Open now
             </button>
-          </h2>
+          </div>
           <div className="list-card__scroll" id="other-pharmacies">
-            <ol className="results" start={2}>
-              {others.map((pharmacy, index) => {
-                const selected = pharmacy.id === selectedId
-                return (
-                  <li key={pharmacy.id} id={rowId(pharmacy.id)} className="result" data-selected={selected}>
-                    <button
-                      type="button"
-                      className="result__summary"
-                      aria-expanded={selected}
-                      onClick={() => onSelect(pharmacy.id)}
-                    >
-                      <span className="result__rank" aria-hidden="true">
-                        {index + 2}
-                      </span>
-                      <span className="result__text">
-                        <span className="result__name">{pharmacy.name}</span>
-                        {pharmacy.address && <span className="result__address">{pharmacy.address}</span>}
-                        <OpenStatusLine pharmacy={pharmacy} status={openStatuses.get(pharmacy.id)} />
-                      </span>
-                      <span className="result__trip">
-                        <span className="result__distance">{formatDistance(travelMeters(pharmacy))}</span>
-                        {pharmacy.walk && pharmacy.walk.meters <= WALKABLE_METERS && (
-                          <span className="result__minutes">{pharmacy.walk.minutes} min</span>
-                        )}
-                      </span>
-                    </button>
-                    {selected && <PharmacyActions pharmacy={pharmacy} origin={origin} />}
-                  </li>
-                )
-              })}
-            </ol>
+            {others.length > 0 ? (
+              <ol className="results" start={2}>
+                {others.map((pharmacy, index) => {
+                  const selected = pharmacy.id === selectedId
+                  return (
+                    <li key={pharmacy.id} id={rowId(pharmacy.id)} className="result" data-selected={selected}>
+                      <button
+                        type="button"
+                        className="result__summary"
+                        aria-expanded={selected}
+                        onClick={() => onSelect(pharmacy.id)}
+                      >
+                        <span className="result__rank" aria-hidden="true">
+                          {index + 2}
+                        </span>
+                        <span className="result__text">
+                          <span className="result__name">{pharmacy.name}</span>
+                          {pharmacy.address && <span className="result__address">{pharmacy.address}</span>}
+                          <OpenStatusLine pharmacy={pharmacy} status={openStatuses.get(pharmacy.id)} />
+                        </span>
+                        <span className="result__trip">
+                          <span className="result__distance">{formatDistance(travelMeters(pharmacy))}</span>
+                          {pharmacy.walk && pharmacy.walk.meters <= WALKABLE_METERS && (
+                            <span className="result__minutes">{pharmacy.walk.minutes} min</span>
+                          )}
+                        </span>
+                      </button>
+                      {selected && <PharmacyActions pharmacy={pharmacy} origin={origin} />}
+                    </li>
+                  )
+                })}
+              </ol>
+            ) : (
+              <p className="list-card__empty">No other pharmacy nearby is open right now.</p>
+            )}
             <p className="fine-print">
               {nearest.walk
                 ? 'Distances and times follow walking routes.'

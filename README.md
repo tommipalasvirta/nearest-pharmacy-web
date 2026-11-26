@@ -61,11 +61,10 @@ The map fills the screen and the answer floats over it. The nearest pharmacy com
 first, with its walking distance and time and a directions link, and a dotted line
 on the map follows the walking route to it. The numbered pins match the ranks in the
 list. Selecting a pin or a row highlights the other and moves the route to that
-pharmacy. The **Open now** filter under the search bar narrows the list and the map
+pharmacy. The **Open now** filter in the list's heading narrows the list and the map
 to pharmacies that are open at this moment, and the nearest of those becomes the
-answer. On a phone the results sit in a
-sheet under the map: the nearest pharmacy is always visible and the rest of the list
-opens on demand.
+answer. On a phone the results sit in a sheet under the map: the nearest pharmacy is
+always visible and the rest of the list opens on demand.
 
 Every state has its own screen: locating, searching, location blocked, location
 unavailable, address not found, no pharmacies in range, and network failure with a

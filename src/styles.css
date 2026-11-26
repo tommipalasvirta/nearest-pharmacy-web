@@ -404,19 +404,21 @@ input {
   height: 1.2rem;
 }
 
-/* A filter that floats under the search bar. */
+/* A toggle for narrowing the list, in its heading. */
 .chip {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 0.4rem;
-  justify-self: start;
-  min-height: 2.75rem;
-  padding: 0 1rem;
-  border: 0;
+  min-height: 2.5rem;
+  margin-left: auto;
+  padding: 0 0.85rem;
+  border: 1.5px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
-  box-shadow: var(--float-shadow);
+  color: var(--ink);
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -425,13 +427,9 @@ input {
 }
 
 .chip[aria-pressed='true'] {
+  border-color: var(--ink);
   background: var(--ink);
   color: #fff;
-}
-
-.chip__count {
-  font-weight: 400;
-  opacity: 0.8;
 }
 
 .chip svg {
@@ -574,21 +572,30 @@ input {
 }
 
 .list-card__heading {
+  display: flex;
   flex: none;
+  align-items: center;
+  min-height: 3.25rem;
+  padding-right: 0.75rem;
   font-size: 0.9375rem;
-  font-weight: 600;
   color: var(--muted);
 }
 
-/* Phones: the heading is the button that opens and closes the list. */
+/* Phones: the button that opens and closes the list stands in for the title. */
 .list-card__title {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .list-card__toggle {
-  width: 100%;
-  min-height: 3rem;
-  padding: 0 1.25rem;
+  flex: 1;
+  min-width: 0;
+  min-height: 3.25rem;
+  padding: 0 0.75rem 0 1.25rem;
   border: 0;
   background: none;
   color: var(--cross);
@@ -629,6 +636,10 @@ input {
   padding: 0.85rem 1.25rem 1rem;
 }
 
+.list-card__empty {
+  padding: 0.85rem 1.25rem 0;
+}
+
 @media (min-width: 56rem) {
   .nearest,
   .list-card {
@@ -649,8 +660,17 @@ input {
 
   /* Wide screens: the list is always open, under a plain heading. */
   .list-card__title {
-    display: block;
-    padding: 0.85rem 1.25rem;
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    min-width: 0;
+    padding: 0 0.5rem 0 1.25rem;
+    overflow: hidden;
+    font-size: inherit;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .list-card__toggle {

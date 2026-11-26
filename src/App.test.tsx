@@ -158,7 +158,7 @@ describe('finding pharmacies from the device location', () => {
 })
 
 describe('filtering to pharmacies that are open now', () => {
-  const openNow = () => screen.getByRole('button', { name: /^Open now/ })
+  const openNow = () => screen.getByRole('button', { name: 'Open now' })
   const listedNames = () =>
     within(screen.getByRole('list'))
       .getAllByRole('listitem')
@@ -173,7 +173,7 @@ describe('filtering to pharmacies that are open now', () => {
     await userEvent.click(openNow())
 
     expect(openNow()).toHaveAttribute('aria-pressed', 'true')
-    expect(openNow()).toHaveTextContent('2 of 5')
+    expect(screen.getByRole('heading', { name: '2 of 5 open now' })).toBeVisible()
     const nearest = screen.getByText('Nearest open now').closest('article')!
     expect(within(nearest).getByRole('heading', { name: 'Kallion Apteekki' })).toBeVisible()
     expect(listedNames()).toEqual(['Sillan Apteekki'])
@@ -189,6 +189,26 @@ describe('filtering to pharmacies that are open now', () => {
     await userEvent.click(openNow())
 
     expect(openNow()).toHaveAttribute('aria-pressed', 'false')
+    expect(listedNames()).toHaveLength(4)
+  })
+
+  it('can still be switched off when only one pharmacy is open', async () => {
+    const oneOpen = OVERPASS_PHARMACIES.map(({ tags, ...node }, index) => ({
+      ...node,
+      tags: index === 1 ? tags : { amenity: 'pharmacy', name: tags.name },
+    }))
+    stubNetwork({ overpass: () => jsonResponse({ elements: oneOpen }) })
+    render(<App />)
+    await useMyLocation()
+    await screen.findByText('Nearest to you')
+
+    await userEvent.click(openNow())
+
+    expect(screen.getByRole('heading', { name: '1 of 5 open now' })).toBeVisible()
+    expect(screen.getByText('No other pharmacy nearby is open right now.')).toBeVisible()
+
+    await userEvent.click(openNow())
+
     expect(listedNames()).toHaveLength(4)
   })
 
