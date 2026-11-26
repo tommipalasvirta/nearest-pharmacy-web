@@ -2,22 +2,28 @@ import type { Coordinates } from './geo'
 import { firstSuccessful } from './hedge'
 import { searchNominatim } from './nominatim'
 import { searchOverpass } from './overpass'
+import { searchSnapshot } from './snapshot'
 import type { Pharmacy } from './types'
 
 /** The search widens through these radii until it has enough results. */
-export const SEARCH_RADII_METERS = [1_500, 5_000, 15_000, 50_000]
+export const SEARCH_RADII_METERS = [5_000, 15_000, 50_000]
 
 /** How long the primary source gets before the fallback starts alongside it. */
 export const FALLBACK_HEAD_START_MS = 3_000
 
+/** How long the live sources get before the saved copy is used instead. */
+export const SAVED_DATA_HEAD_START_MS = 8_000
+
 const ENOUGH_RESULTS = 5
-const MAX_RESULTS = 25
+const MAX_RESULTS = 100
 
 export interface SourceResult {
   /** Every pharmacy within `radiusMeters`, in any order. */
   pharmacies: Pharmacy[]
   /** The radius the source fully covered; may be smaller than requested. */
   radiusMeters: number
+  /** Set when the data is a saved copy rather than live: the ISO date it was saved. */
+  savedOn?: string
 }
 
 export interface SourceContext {
@@ -34,10 +40,13 @@ export type PharmacySource = (
 
 export interface SearchOptions {
   signal?: AbortSignal
-  /** Tried in order; later sources are fallbacks. */
+  /** Live sources, tried in order; later ones are fallbacks. */
   sources?: PharmacySource[]
+  /** A saved copy to use when no live source answers in time; `null` for none. */
+  savedData?: PharmacySource | null
   radii?: number[]
   headStartMs?: number
+  savedDataHeadStartMs?: number
 }
 
 export interface SearchResult {
@@ -45,6 +54,8 @@ export interface SearchResult {
   pharmacies: Pharmacy[]
   /** The radius that was searched. */
   radiusMeters: number
+  /** Set when live data was unavailable: the ISO date of the saved copy shown instead. */
+  savedOn?: string
 }
 
 /**
@@ -54,6 +65,9 @@ export interface SearchResult {
  * servers are sometimes overloaded for half a minute at a time. So the request
  * is hedged: if Overpass has not answered after a short head start (or fails),
  * the same search also runs against Nominatim and whichever finishes first wins.
+ *
+ * If neither has answered after a longer wait, or both fail, a copy of the
+ * Helsinki region saved in the repository is used, where it covers the place.
  */
 export function findNearbyPharmacies(
   origin: Coordinates,
@@ -61,21 +75,23 @@ export function findNearbyPharmacies(
 ): Promise<SearchResult> {
   const {
     sources = [searchOverpass, searchNominatim],
+    savedData = searchSnapshot,
     radii = SEARCH_RADII_METERS,
     headStartMs = FALLBACK_HEAD_START_MS,
+    savedDataHeadStartMs = SAVED_DATA_HEAD_START_MS,
     signal,
   } = options
 
-  const attempts = sources.map(
-    (source) => (raceSignal: AbortSignal) => searchWidening(source, origin, radii, raceSignal),
-  )
-  return firstSuccessful(attempts, headStartMs, signal)
+  const attempt = (source: PharmacySource) => (raceSignal: AbortSignal) =>
+    searchWidening(source, origin, radii, raceSignal)
+  const live = (raceSignal: AbortSignal) => firstSuccessful(sources.map(attempt), headStartMs, raceSignal)
+
+  return firstSuccessful(savedData ? [live, attempt(savedData)] : [live], savedDataHeadStartMs, signal)
 }
 
 /**
- * Starts with a walkable radius and widens it until there are enough results
- * to be useful: dense cities get one small, fast query while rural areas
- * still find something.
+ * Starts with a radius that covers a town and widens it until there are enough
+ * results to be useful, so rural areas still find something.
  */
 async function searchWidening(
   source: PharmacySource,
@@ -92,5 +108,5 @@ async function searchWidening(
   }
 
   const nearestFirst = [...best.pharmacies].sort((a, b) => a.distanceMeters - b.distanceMeters)
-  return { pharmacies: nearestFirst.slice(0, MAX_RESULTS), radiusMeters: best.radiusMeters }
+  return { ...best, pharmacies: nearestFirst.slice(0, MAX_RESULTS) }
 }

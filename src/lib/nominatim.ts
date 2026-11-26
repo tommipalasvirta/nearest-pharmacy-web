@@ -8,7 +8,8 @@ const NOMINATIM_URL = 'https://nominatim.openstreetmap.org'
 const REQUEST_TIMEOUT_MS = 10_000
 
 /** The most places Nominatim returns for one search. */
-const RESULT_LIMIT = 40
+/** The most places Nominatim returns for one search, whatever limit is asked for. */
+const RESULT_LIMIT = 50
 const SMALLEST_SEARCH_RADIUS_METERS = 200
 const METERS_PER_DEGREE_LATITUDE = (Math.PI * EARTH_RADIUS_METERS) / 180
 /** Keeps the box safely outside the circle despite coordinate rounding. */
@@ -74,23 +75,14 @@ export async function reverseGeocode(position: Coordinates, signal?: AbortSignal
  * Every pharmacy within a radius of `origin`, from Nominatim. Used as the
  * fallback when Overpass is slow or down.
  *
- * Nominatim searches a box and returns at most 40 places in no useful order,
- * so a full response may be missing the nearest pharmacy. When that happens
- * the radius is halved until everything fits in one response; the result then
- * reports the smaller radius it actually covered.
+ * Nominatim searches a box and returns at most 50 places in no useful order,
+ * so a full response may be missing the nearest pharmacy. A box that comes
+ * back full is read again as four quarters. If a quarter is full too, the
+ * radius is halved; the result then reports the smaller radius it covered.
  */
 export const searchNominatim: PharmacySource = async (origin, requestedRadius, { signal, fetchFn }) => {
   for (let radiusMeters = requestedRadius; ; radiusMeters /= 2) {
-    const params = {
-      amenity: 'pharmacy',
-      viewbox: boundingBox(origin, radiusMeters),
-      bounded: '1',
-      extratags: '1',
-      namedetails: '1',
-      limit: String(RESULT_LIMIT),
-    }
-    const places = await getJson<NominatimPlace[]>('/search', params, signal, fetchFn)
-    const isComplete = places.length < RESULT_LIMIT
+    const { places, isComplete } = await listPharmacies(boundingBox(origin, radiusMeters), signal, fetchFn)
     if (isComplete || radiusMeters <= SMALLEST_SEARCH_RADIUS_METERS) {
       // The box's corners reach beyond the radius; only the circle is complete.
       const pharmacies = toPharmacies(places, origin).filter((p) => p.distanceMeters <= radiusMeters)
@@ -99,11 +91,45 @@ export const searchNominatim: PharmacySource = async (origin, requestedRadius, {
   }
 }
 
+/** The pharmacies in a box. `isComplete` is false when there are too many to list. */
+async function listPharmacies(
+  box: Box,
+  signal: AbortSignal,
+  fetchFn: typeof fetch | undefined,
+): Promise<{ places: NominatimPlace[]; isComplete: boolean }> {
+  const search = (area: Box) =>
+    getJson<NominatimPlace[]>(
+      '/search',
+      {
+        amenity: 'pharmacy',
+        viewbox: [area.west, area.north, area.east, area.south].map((value) => value.toFixed(6)).join(','),
+        bounded: '1',
+        extratags: '1',
+        namedetails: '1',
+        limit: String(RESULT_LIMIT),
+      },
+      signal,
+      fetchFn,
+    )
+
+  const whole = await search(box)
+  if (whole.length < RESULT_LIMIT) return { places: whole, isComplete: true }
+
+  // One at a time: Nominatim's usage policy asks for no more than a request a second.
+  const places: NominatimPlace[] = []
+  for (const quarter of quarters(box)) {
+    const part = await search(quarter)
+    if (part.length >= RESULT_LIMIT) return { places: whole, isComplete: false }
+    places.push(...part)
+  }
+  return { places, isComplete: true }
+}
+
 /** Maps Nominatim places to pharmacies with their distance from `origin`. */
 export function toPharmacies(places: NominatimPlace[], origin: Coordinates): Pharmacy[] {
-  return places
+  const pharmacies = places
     .filter((place) => place.category === 'amenity' && place.type === 'pharmacy')
-    .map((place) => {
+    .map((place): Pharmacy => {
       const lat = Number(place.lat)
       const lon = Number(place.lon)
       const tags = place.extratags ?? {}
@@ -122,15 +148,33 @@ export function toPharmacies(places: NominatimPlace[], origin: Coordinates): Pha
         openingHours: tags.opening_hours,
       }
     })
+  // A pharmacy on the line between two quarters of a box is listed in both.
+  return [...new Map(pharmacies.map((pharmacy) => [pharmacy.id, pharmacy])).values()]
 }
 
-/** A `west,north,east,south` box that contains the circle around `center`. */
-export function boundingBox(center: Coordinates, radiusMeters: number): string {
+export interface Box {
+  west: number
+  south: number
+  east: number
+  north: number
+}
+
+/** A box that contains the circle around `center`. */
+export function boundingBox(center: Coordinates, radiusMeters: number): Box {
   const dLat = (radiusMeters * BOX_MARGIN) / METERS_PER_DEGREE_LATITUDE
   const dLon = dLat / Math.cos((center.lat * Math.PI) / 180)
-  return [center.lon - dLon, center.lat + dLat, center.lon + dLon, center.lat - dLat]
-    .map((value) => value.toFixed(6))
-    .join(',')
+  return { west: center.lon - dLon, south: center.lat - dLat, east: center.lon + dLon, north: center.lat + dLat }
+}
+
+function quarters({ west, south, east, north }: Box): Box[] {
+  const middleLat = (south + north) / 2
+  const middleLon = (west + east) / 2
+  return [
+    { west, south: middleLat, east: middleLon, north },
+    { west: middleLon, south: middleLat, east, north },
+    { west, south, east: middleLon, north: middleLat },
+    { west: middleLon, south, east, north: middleLat },
+  ]
 }
 
 const locality = (address: NominatimAddress) =>

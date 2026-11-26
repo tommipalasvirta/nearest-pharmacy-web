@@ -10,6 +10,8 @@ interface Props {
   openStatuses: Map<string, OpenStatus>
   /** Whether the list has been narrowed to pharmacies that are open now. */
   openOnly: boolean
+  /** Set when live data was unavailable: the ISO date of the saved copy being shown. */
+  savedOn?: string
   selectedId: string | null
   onSelect: (id: string) => void
 }
@@ -34,6 +36,7 @@ export function PharmacyList({
   origin,
   openStatuses,
   openOnly,
+  savedOn,
   selectedId,
   onSelect,
 }: Props) {
@@ -77,6 +80,12 @@ export function PharmacyList({
         </p>
         <PharmacyActions pharmacy={nearest} origin={origin} />
       </article>
+
+      {savedOn && (
+        <p className="notice" role="status">
+          Live data is unavailable. Showing a copy saved on {formatDate(savedOn)}.
+        </p>
+      )}
 
       {others.length > 0 && (
         <section className="list-card" data-open={listOpen} aria-labelledby="others-heading">
@@ -139,3 +148,6 @@ export function PharmacyList({
 }
 
 const rowId = (pharmacyId: string) => `pharmacy-${pharmacyId.replace('/', '-')}`
+
+const formatDate = (isoDate: string) =>
+  new Date(isoDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })

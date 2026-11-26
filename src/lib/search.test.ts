@@ -37,25 +37,25 @@ describe('findNearbyPharmacies', () => {
     const source = sourceReturning(pharmacies(6))
     const result = await findNearbyPharmacies(HELSINKI, { sources: [source] })
     expect(source).toHaveBeenCalledTimes(1)
-    expect(result.radiusMeters).toBe(1500)
+    expect(result.radiusMeters).toBe(5000)
   })
 
   it('widens the radius while results are sparse', async () => {
     const source = sourceReturning([], pharmacies(1), pharmacies(6))
     const result = await findNearbyPharmacies(HELSINKI, { sources: [source] })
-    expect(source.mock.calls.map(([, radius]) => radius)).toEqual([1500, 5000, 15_000])
+    expect(source.mock.calls.map(([, radius]) => radius)).toEqual([5000, 15_000, 50_000])
     expect(result.pharmacies).toHaveLength(6)
   })
 
   it('reports the widest radius when nothing is found anywhere', async () => {
-    const source = sourceReturning([], [], [], [])
+    const source = sourceReturning([], [], [])
     const result = await findNearbyPharmacies(HELSINKI, { sources: [source] })
     expect(result).toEqual({ pharmacies: [], radiusMeters: 50_000 })
   })
 
-  it('caps the list at 25 pharmacies', async () => {
-    const result = await findNearbyPharmacies(HELSINKI, { sources: [sourceReturning(pharmacies(60))] })
-    expect(result.pharmacies).toHaveLength(25)
+  it('caps the list at 100 pharmacies', async () => {
+    const result = await findNearbyPharmacies(HELSINKI, { sources: [sourceReturning(pharmacies(160))] })
+    expect(result.pharmacies).toHaveLength(100)
   })
 
   it('falls back to the next source as soon as the first one fails', async () => {
@@ -65,7 +65,33 @@ describe('findNearbyPharmacies', () => {
   })
 
   it('rejects when every source fails', async () => {
-    const search = findNearbyPharmacies(HELSINKI, { sources: [failingSource(), failingSource()] })
+    const search = findNearbyPharmacies(HELSINKI, {
+      sources: [failingSource(), failingSource()],
+      savedData: null,
+    })
+    await expect(search).rejects.toBeInstanceOf(AggregateError)
+  })
+
+  it('uses the saved copy when no live source answers', async () => {
+    const savedData = vi.fn<PharmacySource>(async (_origin, radiusMeters) => ({
+      pharmacies: pharmacies(6),
+      radiusMeters,
+      savedOn: '2026-11-26',
+    }))
+    const result = await findNearbyPharmacies(HELSINKI, { sources: [failingSource()], savedData })
+    expect(result.pharmacies).toHaveLength(6)
+    expect(result.savedOn).toBe('2026-11-26')
+  })
+
+  it('does not touch the saved copy when a live source answers', async () => {
+    const savedData = vi.fn<PharmacySource>()
+    const result = await findNearbyPharmacies(HELSINKI, { sources: [sourceReturning(pharmacies(6))], savedData })
+    expect(savedData).not.toHaveBeenCalled()
+    expect(result.savedOn).toBeUndefined()
+  })
+
+  it('rejects when the saved copy does not cover the place either', async () => {
+    const search = findNearbyPharmacies(HELSINKI, { sources: [failingSource()], savedData: failingSource() })
     await expect(search).rejects.toBeInstanceOf(AggregateError)
   })
 })

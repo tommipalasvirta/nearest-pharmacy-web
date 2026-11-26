@@ -81,6 +81,8 @@ function stubNetwork({ overpass, geocode }: Network = {}) {
   return fetchMock
 }
 
+const TAMPERE = { lat: 61.4978, lon: 23.761 }
+
 const useMyLocation = () => userEvent.click(screen.getByRole('button', { name: 'Use my location' }))
 
 beforeEach(() => {
@@ -241,6 +243,8 @@ describe('when something goes wrong', () => {
   })
 
   it('lets the search be retried after a network failure', async () => {
+    // Outside the Helsinki region, so there is no saved copy to fall back on.
+    stubGeolocation(TAMPERE)
     let online = false
     const fetchMock = stubNetwork()
     const respond = fetchMock.getMockImplementation()!
@@ -257,6 +261,22 @@ describe('when something goes wrong', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Try again' }))
 
     expect(await screen.findByText('Nearest to you')).toBeVisible()
+  })
+})
+
+describe('when the live data sources are down', () => {
+  it('shows the saved copy of the Helsinki region, and says so', async () => {
+    const fetchMock = stubNetwork()
+    const respond = fetchMock.getMockImplementation()!
+    fetchMock.mockImplementation(async (input) => {
+      if (/overpass|nominatim/.test(String(input))) throw new TypeError('Failed to fetch')
+      return respond(input)
+    })
+    render(<App />)
+    await useMyLocation()
+
+    expect(await screen.findByText('Nearest to you')).toBeVisible()
+    expect(screen.getByText(/Showing a copy saved on \d+ \w+ \d{4}/)).toBeVisible()
   })
 })
 

@@ -1,0 +1,1755 @@
+{
+ "area": "Helsinki region",
+ "savedOn": "2026-11-26",
+ "bounds": {
+  "south": 60.1,
+  "west": 24.5,
+  "north": 60.42,
+  "east": 25.26
+ },
+ "elements": [
+  {
+   "type": "node",
+   "id": 28107547,
+   "lat": 60.2004403,
+   "lon": 24.8765878,
+   "tags": {
+    "name": "Munkkiniemen Apteekki",
+    "addr:street": "Professorintie",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+35894770100",
+    "website": "https://www.munkkiniemenapteekki.fi/fi/",
+    "opening_hours": "Mo-Fr 08:00-18:00; Sa 09:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 51230651,
+   "lat": 60.1952818,
+   "lon": 25.0304721,
+   "tags": {
+    "name": "Herttoniemen apteekki",
+    "addr:street": "Hiihtomäentie",
+    "addr:housenumber": "14",
+    "addr:city": "Helsinki",
+    "phone": "+35897594780",
+    "website": "https://www.herttoniemenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 52348969,
+   "lat": 60.1942147,
+   "lon": 25.0336548,
+   "tags": {
+    "name": "Hertsin Apteekki",
+    "addr:street": "Insinöörinkatu",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+358104117380",
+    "website": "https://www.hertsinapteekki.fi",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa 09:00-18:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 59967450,
+   "lat": 60.1635083,
+   "lon": 24.9099552,
+   "tags": {
+    "name": "Ruoholahden apteekki",
+    "addr:street": "Itämerenkatu",
+    "addr:housenumber": "21",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 6859410",
+    "website": "https://www.ruoholahdenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 59967815,
+   "lat": 60.1794724,
+   "lon": 24.9230866,
+   "tags": {
+    "name": "Carelia apteekki",
+    "addr:street": "Runeberginkatu",
+    "addr:housenumber": "46",
+    "addr:city": "Helsinki",
+    "phone": "+358925385300",
+    "website": "https://carelia-apteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 09:30-15:30"
+   }
+  },
+  {
+   "type": "node",
+   "id": 73109424,
+   "lat": 60.2067551,
+   "lon": 25.1454154,
+   "tags": {
+    "name": "Vuosaaren Apteekki",
+    "addr:street": "Vuotie",
+    "addr:housenumber": "45",
+    "addr:city": "Helsinki",
+    "phone": "+35893434400",
+    "website": "https://vuosaarenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-18:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 89124257,
+   "lat": 60.2364874,
+   "lon": 25.0845811,
+   "tags": {
+    "name": "Kontulankaaren apteekki",
+    "addr:street": "Kontulankaari",
+    "addr:housenumber": "1 A",
+    "addr:city": "Helsinki",
+    "phone": "+35893436650",
+    "website": "https://www.kontulankaarenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 92760444,
+   "lat": 60.1801596,
+   "lon": 24.9494202,
+   "tags": {
+    "name": "Apteekki 360",
+    "addr:street": "Siltasaarenkatu",
+    "addr:housenumber": "18",
+    "addr:city": "Helsinki",
+    "phone": "+358 29 3400680",
+    "website": "https://apteekki360.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 98684851,
+   "lat": 60.2610705,
+   "lon": 25.0762445,
+   "tags": {
+    "name": "Jakomäen apteekki",
+    "addr:street": "Jakomäenkuja",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+35893892423",
+    "website": "https://jakomaenapteekki.fi/fi/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 09:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 143519530,
+   "lat": 60.2275152,
+   "lon": 25.0096967,
+   "tags": {
+    "name": "Yliopiston Apteekki",
+    "brand": "Yliopiston Apteekki",
+    "operator": "Helsingin yliopisto",
+    "addr:street": "Viikintori",
+    "addr:housenumber": "3",
+    "addr:city": "Helsinki",
+    "phone": "+358 300 20200",
+    "website": "https://www.yliopistonapteekki.fi/",
+    "contact:website": "http://www.yliopistonapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa 09:00-20:00; Su 10:00-20:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 153627287,
+   "lat": 60.2025587,
+   "lon": 24.967831,
+   "tags": {
+    "name": "Arabianrannan Apteekki",
+    "addr:street": "Hämeentie",
+    "addr:housenumber": "111",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 868 9160",
+    "website": "https://www.arabianrannanapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 09:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 164970023,
+   "lat": 60.2480455,
+   "lon": 24.8636118,
+   "tags": {
+    "name": "Malminkartanon apteekki",
+    "operator": "Hyvän Mielen Apteekit Oy",
+    "addr:street": "Luutnantintie",
+    "addr:housenumber": "5",
+    "addr:city": "Helsinki",
+    "phone": "+358 29 1703831",
+    "website": "https://hyma.fi/apteekit/",
+    "opening_hours": "Mo-Fr 10:00-18:00; Sa,Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 169267879,
+   "lat": 60.1928099,
+   "lon": 25.0311014,
+   "tags": {
+    "name": "Kipparlahden apteekki",
+    "addr:street": "Hitsaajankatu",
+    "addr:housenumber": "13",
+    "addr:city": "Helsinki",
+    "phone": "+358207415260",
+    "website": "https://www.kipparlahdenapteekki.fi/",
+    "opening_hours": "Mo-Fr 07:30-20:00; Sa 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 174136019,
+   "lat": 60.1879827,
+   "lon": 24.9181038,
+   "tags": {
+    "name": "Yliopiston Apteekki - Helsinki Töölö",
+    "operator": "Helsingin yliopisto",
+    "addr:street": "Mannerheimintie",
+    "addr:housenumber": "96",
+    "addr:city": "Helsinki",
+    "phone": "+358 300 20200",
+    "website": "https://www.yliopistonapteekki.fi/yhteystiedot/helsinki-t%C3%B6%C3%B6l%C3%B6",
+    "opening_hours": "24/7"
+   }
+  },
+  {
+   "type": "node",
+   "id": 231630826,
+   "lat": 60.2032695,
+   "lon": 24.8973829,
+   "tags": {
+    "name": "Pikku Huopalahden sivuapteekki",
+    "addr:street": "Korppaanmäentie",
+    "addr:housenumber": "4",
+    "addr:city": "Helsinki",
+    "phone": "+35894361270",
+    "website": "https://www.avainapteekit.fi/avainapteekit/apteekit/pikku-huopalahden-sivuapteekki",
+    "opening_hours": "Mo-Fr 09:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 248759233,
+   "lat": 60.1724919,
+   "lon": 24.727071,
+   "tags": {
+    "name": "Olarin apteekki",
+    "addr:street": "Kuunkierros",
+    "addr:housenumber": "1",
+    "addr:city": "Espoo",
+    "phone": "+35898840055",
+    "website": "https://www.olarinapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 265725658,
+   "lat": 60.2161443,
+   "lon": 24.9585223,
+   "tags": {
+    "name": "Käpylän apteekki",
+    "addr:street": "Käpyläntie",
+    "addr:housenumber": "8",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 791335",
+    "website": "https://www.kapylanapteekki.fi/fi/",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 09:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 267935234,
+   "lat": 60.3804759,
+   "lon": 25.0920648,
+   "tags": {
+    "name": "Savion sivuapteekki",
+    "operator": "Keravan 1. apteekki",
+    "addr:street": "Koivikontie",
+    "addr:housenumber": "12",
+    "addr:city": "Kerava",
+    "phone": "+358 29 3400227",
+    "website": "https://keravanapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 270755786,
+   "lat": 60.3744291,
+   "lon": 25.017757,
+   "tags": {
+    "name": "Riihikallion Apteekki",
+    "operator": "Tuusulan I Apteekki",
+    "addr:street": "Haukantie",
+    "addr:housenumber": "2",
+    "addr:city": "Tuusula",
+    "phone": "+358 9 8366740",
+    "website": "https://www.tuusulanapteekki.fi/riihikallion-sivuapteekki/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 276457372,
+   "lat": 60.2260815,
+   "lon": 24.74093,
+   "tags": {
+    "name": "Viherlaakson apteekki",
+    "addr:street": "Kuusiniementie",
+    "addr:housenumber": "2",
+    "addr:city": "Espoo",
+    "phone": "+358 50 471 2990",
+    "website": "https://www.viherinapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-17:00; Su 12:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 305663739,
+   "lat": 60.1582275,
+   "lon": 24.5351362,
+   "tags": {
+    "name": "Masalan sivuapteekki",
+    "operator": "Kirkkonummen 1. apteekki",
+    "addr:street": "Tinankuja",
+    "addr:housenumber": "2",
+    "addr:city": "Masala",
+    "phone": "+358 20 7428590",
+    "website": "https://www.kirkkonummenapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-19:00; Sa 10:00-14:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 347468826,
+   "lat": 60.2934328,
+   "lon": 25.033139,
+   "tags": {
+    "name": "Tikkurilan Uusi Apteekki",
+    "addr:street": "Talvikkitie",
+    "addr:housenumber": "37",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 823 5040",
+    "website": "https://www.tikkurilanuusiapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-17:00; Su 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 349222393,
+   "lat": 60.293136,
+   "lon": 25.0384373,
+   "tags": {
+    "name": "Tikkurilan Ykkösapteekki",
+    "addr:street": "Kielotie",
+    "addr:housenumber": "11",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 8362540",
+    "website": "https://tikkurilanykkosapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa,Su 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 375977407,
+   "lat": 60.2136617,
+   "lon": 25.0887669,
+   "tags": {
+    "name": "Apteekki Primavera",
+    "addr:street": "Vanhanlinnantie",
+    "addr:housenumber": "1",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 42412152",
+    "website": "https://apteekkiprimavera.fi/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 410603490,
+   "lat": 60.2747573,
+   "lon": 25.0341745,
+   "tags": {
+    "name": "Tapuli apteekki",
+    "addr:street": "Ajurinaukio",
+    "addr:housenumber": "5",
+    "addr:city": "Helsinki",
+    "phone": "+35893867986",
+    "website": "https://www.tapuliapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 09:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 426911743,
+   "lat": 60.1620945,
+   "lon": 24.9403448,
+   "tags": {
+    "name": "Punavuoren apteekki",
+    "addr:street": "Fredrikinkatu",
+    "addr:housenumber": "23",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 6803440",
+    "website": "https://www.punavuorenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 457180710,
+   "lat": 60.23425,
+   "lon": 25.0108485,
+   "tags": {
+    "name": "Pihlajamäen apteekki",
+    "addr:street": "Meripihkatie",
+    "addr:housenumber": "3",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 3876787",
+    "website": "https://www.pihlajamaenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-18:30; Sa 09:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 465205879,
+   "lat": 60.3779107,
+   "lon": 24.7581585,
+   "tags": {
+    "name": "Klaukkalan apteekki",
+    "brand": "Hyvän Mielen Apteekki",
+    "operator": "Nurmijärven III Apteekki",
+    "addr:street": "Klaukkalantie",
+    "addr:housenumber": "55",
+    "addr:city": "Klaukkala",
+    "phone": "+35892766950",
+    "website": "https://klaukkala.hyma.fi/",
+    "opening_hours": "Mo-Fr 08:30-21:00; Sa 08:30-18:00; Su,PH 11:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 472477461,
+   "lat": 60.2785578,
+   "lon": 25.1039159,
+   "tags": {
+    "name": "Hakunilan apteekki",
+    "addr:street": "Laukkarinne",
+    "addr:housenumber": "6",
+    "addr:city": "Vantaa",
+    "phone": "+35898770580",
+    "website": "https://www.hakunilanapteekki.fi",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-17:00; Su 11:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 486572724,
+   "lat": 60.3238571,
+   "lon": 25.0578617,
+   "tags": {
+    "name": "Koivukylän apteekki",
+    "addr:street": "Ojalehdonkuja",
+    "addr:housenumber": "1",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 8710826",
+    "website": "https://www.koivukylanapteekki.fi/",
+    "opening_hours": "Mo-Fr 07:30-21:00; Sa 08:30-19:00; Su,PH 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 488219394,
+   "lat": 60.2786228,
+   "lon": 24.8537096,
+   "tags": {
+    "name": "Martinlaakson apteekki",
+    "addr:street": "Kivivuorentie",
+    "addr:housenumber": "4",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 85531400",
+    "website": "https://martinlaaksonapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-17:00; Su 11:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 510596916,
+   "lat": 60.2750681,
+   "lon": 24.9891243,
+   "tags": {
+    "name": "Siltamäen apteekki",
+    "addr:street": "Jalopeurantie",
+    "addr:housenumber": "4",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 3866023",
+    "website": "https://www.siltamaenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 09:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 520284244,
+   "lat": 60.2316628,
+   "lon": 24.9329614,
+   "tags": {
+    "name": "Maunulan apteekki",
+    "addr:street": "Pakilantie",
+    "addr:housenumber": "10",
+    "addr:city": "Helsinki",
+    "phone": "+35897248543",
+    "website": "https://www.maunulanapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 09:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 520284247,
+   "lat": 60.2380984,
+   "lon": 24.9279024,
+   "tags": {
+    "name": "Pakilan apteekki",
+    "addr:street": "Pakilantie",
+    "addr:housenumber": "56",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 7248479",
+    "website": "https://pakilanapteekki.fi/",
+    "opening_hours": "Mo-Sa 07:00-22:00; Su 09:00-22:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 553318872,
+   "lat": 60.1757805,
+   "lon": 24.8053785,
+   "tags": {
+    "name": "Tapiolan Apteekki",
+    "addr:street": "Länsituuli",
+    "addr:housenumber": "7",
+    "addr:city": "Espoo",
+    "phone": "+35894520130",
+    "website": "https://www.tapiolanapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa 09:00-19:00; Su 10:00-18:00; PH 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 554532746,
+   "lat": 60.4019741,
+   "lon": 25.0272548,
+   "tags": {
+    "name": "Tuusulan I Apteekki",
+    "addr:street": "Autoasemankatu",
+    "addr:housenumber": "4",
+    "addr:city": "Tuusula",
+    "phone": "+358 9 2745440",
+    "website": "https://www.tuusulanapteekki.fi/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 645029003,
+   "lat": 60.2621846,
+   "lon": 24.8042484,
+   "tags": {
+    "name": "Pähkinärinteen apteekki",
+    "operator": "Vantaan 11. Pähkinärinteen apteekki",
+    "addr:street": "Lammaslammentie",
+    "addr:housenumber": "9",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 849 4180",
+    "website": "https://www.pahkinarinteenapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-19:00; Sa 10:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 662754239,
+   "lat": 60.2187068,
+   "lon": 24.8143849,
+   "tags": {
+    "name": "Apteekki Elixir",
+    "addr:street": "Hevosenkenkä",
+    "addr:housenumber": "3",
+    "addr:city": "Espoo",
+    "phone": "+358103228980",
+    "website": "https://www.apteekkielixir.fi",
+    "opening_hours": "Mo-Fr 08:30-21:00; Sa 10:00-18:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 668244336,
+   "lat": 60.1863694,
+   "lon": 24.9500882,
+   "tags": {
+    "name": "Brahen Apteekki",
+    "addr:street": "Helsinginkatu",
+    "addr:housenumber": "24",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 1461126",
+    "website": "https://brahenapteekki.com/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 09:00-16:00; Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 674161695,
+   "lat": 60.1796531,
+   "lon": 24.9608314,
+   "tags": {
+    "name": "Merihaan sivuapteekki",
+    "addr:street": "Haapaniemenkatu",
+    "addr:housenumber": "14",
+    "addr:city": "Helsinki",
+    "phone": "+358 9738173",
+    "opening_hours": "Mo-Fr 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 698557950,
+   "lat": 60.2375319,
+   "lon": 24.8932586,
+   "tags": {
+    "name": "Kaaren Apteekki",
+    "addr:street": "Kantelettarentie",
+    "addr:housenumber": "1",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 4778010",
+    "website": "https://kaarenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa 09:00-19:00; Su 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 868818402,
+   "lat": 60.1613165,
+   "lon": 24.930053,
+   "tags": {
+    "name": "Hietalahden apteekki",
+    "addr:street": "Hietalahdenranta",
+    "addr:housenumber": "5-7",
+    "addr:city": "Helsinki",
+    "phone": "+3589677626",
+    "website": "https://www.hietalahdenapteekki.fi",
+    "opening_hours": "Mo-Fr 09:00-21:00; Sa 09:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 919561804,
+   "lat": 60.2510722,
+   "lon": 25.0129502,
+   "tags": {
+    "name": "Yliopiston Apteekki",
+    "operator": "Helsingin yliopisto",
+    "addr:street": "Malminkaari",
+    "addr:housenumber": "15",
+    "addr:city": "Helsinki",
+    "phone": "+358 300 20200",
+    "website": "https://www.yliopistonapteekki.fi/",
+    "contact:website": "http://www.yliopistonapteekki.fi/",
+    "opening_hours": "Mo-Sa 07:00-22:00; Su 09:00-22:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 954529675,
+   "lat": 60.2056627,
+   "lon": 24.8793091,
+   "tags": {
+    "name": "Munkkivuoren apteekki",
+    "addr:street": "Raumantie",
+    "addr:housenumber": "1",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 5656010",
+    "website": "https://munkkivuorenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-20:00; Sa 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 967089176,
+   "lat": 60.1922865,
+   "lon": 24.6023657,
+   "tags": {
+    "name": "Kauklahden sivuapteekki",
+    "operator": "Soukan apteekki",
+    "addr:street": "Kauppamäki",
+    "addr:housenumber": "3",
+    "addr:city": "Espoo",
+    "phone": "+3589811464",
+    "website": "https://www.lasihytinapteekki.fi/kauklahden-apteekki/",
+    "opening_hours": "Mo-Fr 08:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 977338113,
+   "lat": 60.1542849,
+   "lon": 24.8795894,
+   "tags": {
+    "name": "Lauttasaaren kirkkoapteekki",
+    "addr:street": "Heikkiläntie",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+358954214100",
+    "website": "https://www.lauttasaarenkirkkoapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-20:00; Sa 09:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1227011882,
+   "lat": 60.1683525,
+   "lon": 24.930792,
+   "tags": {
+    "name": "Töölön apteekki",
+    "addr:street": "Kampinkuja",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+3589441919",
+    "website": "https://www.toolonapteekki.fi",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa 10:00-18:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1369465553,
+   "lat": 60.1717338,
+   "lon": 24.940702,
+   "tags": {
+    "name": "Steissin Apteekki",
+    "addr:street": "Elielinaukio",
+    "addr:housenumber": "3",
+    "addr:city": "Helsinki",
+    "phone": "+358 29 3400890",
+    "website": "https://www.steissinapteekki.fi/",
+    "opening_hours": "Mo-Fr 07:30-18:00; Sa 10:00-16:00; Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1369465698,
+   "lat": 60.1695749,
+   "lon": 24.939536,
+   "tags": {
+    "name": "Yliopiston apteekki",
+    "addr:street": "Mannerheimintie",
+    "addr:housenumber": "5",
+    "addr:city": "Helsinki",
+    "phone": "+358 300 20200",
+    "website": "https://www.yliopistonapteekki.fi/",
+    "opening_hours": "08:00-24:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1377222624,
+   "lat": 60.1643803,
+   "lon": 24.9366904,
+   "tags": {
+    "name": "Apteekki Bulevardia",
+    "addr:street": "Bulevardi",
+    "addr:housenumber": "13",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 6940088",
+    "website": "https://www.apteekkibulevardia.com/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 10:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1378620633,
+   "lat": 60.1681201,
+   "lon": 24.9278344,
+   "tags": {
+    "name": "Kampin apteekki",
+    "addr:street": "Salomonkatu",
+    "addr:housenumber": "19",
+    "addr:city": "Helsinki",
+    "phone": "+35895626331",
+    "website": "https://www.kampinapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1386885405,
+   "lat": 60.1760513,
+   "lon": 24.9218024,
+   "tags": {
+    "name": "Runebergin apteekki",
+    "brand": "Avainapteekit",
+    "addr:street": "Runeberginkatu",
+    "addr:housenumber": "32",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 4366560",
+    "website": "https://runeberginapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1395148940,
+   "lat": 60.1742012,
+   "lon": 24.9534838,
+   "tags": {
+    "name": "Kruununhaan apteekki",
+    "addr:street": "Liisankatu",
+    "addr:housenumber": "21",
+    "addr:city": "Helsinki",
+    "phone": "+35896120760",
+    "website": "https://www.kruununhaanapteekki.fi",
+    "opening_hours": "Mo-Fr 08:30-18:00; Sa 09:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1692162458,
+   "lat": 60.2309928,
+   "lon": 24.8824782,
+   "tags": {
+    "name": "Lassilan apteekki",
+    "addr:street": "Kaupintie",
+    "addr:housenumber": "10",
+    "addr:city": "Helsinki",
+    "phone": "+35895621215",
+    "website": "https://www.lassilanapteekki.com",
+    "opening_hours": "Mo-Fr 09:00-18:00; Sa 10:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1788652338,
+   "lat": 60.2105538,
+   "lon": 24.7285856,
+   "tags": {
+    "name": "Kauniaisten Apteekki",
+    "addr:street": "Kauniaistentie",
+    "addr:housenumber": "7",
+    "addr:city": "Kauniainen",
+    "phone": "+35895051331",
+    "website": "https://www.kauniaistenapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 09:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1997039924,
+   "lat": 60.2593982,
+   "lon": 24.8536669,
+   "tags": {
+    "name": "Myyrmannin apteekki",
+    "addr:street": "Iskoskuja",
+    "addr:housenumber": "3 A 37",
+    "addr:city": "Vantaa",
+    "phone": "+358953088520",
+    "website": "https://www.myyrmanninapteekki.fi",
+    "opening_hours": "Mo-Su 08:00-22:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2116650441,
+   "lat": 60.2243276,
+   "lon": 25.0737502,
+   "tags": {
+    "name": "Myllypuron Apteekki",
+    "addr:street": "Kiviparintie",
+    "addr:housenumber": "6",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 3424350",
+    "website": "https://helsinki.hyma.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-17:00; Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2148929044,
+   "lat": 60.1978791,
+   "lon": 24.8789126,
+   "tags": {
+    "name": "Munkkiniemen Puisto apteekki",
+    "addr:street": "Munkkiniemen puistotie",
+    "addr:housenumber": "15",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 4171444",
+    "website": "http://www.munkkiniemenpuistoapteekki.net",
+    "opening_hours": "Mo-Fr 09:00-19:00; Sa 10:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2180347713,
+   "lat": 60.2393854,
+   "lon": 24.8496951,
+   "tags": {
+    "name": "Pitäjänmäen apteekki",
+    "addr:street": "Ajomiehentie",
+    "addr:housenumber": "1",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 557565",
+    "website": "https://www.pitajanmaenapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-19:00; Sa 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2381712416,
+   "lat": 60.2181384,
+   "lon": 24.8102443,
+   "tags": {
+    "name": "Sellon Apteekki",
+    "addr:street": "Leppävaarankatu",
+    "addr:housenumber": "3-9",
+    "addr:city": "Espoo",
+    "phone": "+35898492550",
+    "website": "https://sellonapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-21:00; Sa 09:00-19:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3485266598,
+   "lat": 60.1488624,
+   "lon": 24.9854056,
+   "tags": {
+    "name": "Suomenlinnan palvelupiste",
+    "operator": "Punavuoren apteekki",
+    "addr:housenumber": "c 1",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 6981011",
+    "website": "https://www.punavuorenapteekki.fi/",
+    "opening_hours": "Mo-Sa 10:30-18:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3635432312,
+   "lat": 60.1989122,
+   "lon": 24.9340409,
+   "tags": {
+    "name": "Pasilan Apteekki",
+    "addr:street": "Veturitie",
+    "addr:housenumber": "11",
+    "addr:city": "Helsinki",
+    "phone": "+35898689240",
+    "website": "https://pasilanapteekki.fi/",
+    "opening_hours": "Mo-Fr 07:00-22:00; Sa,Su 09:00-22:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3995021018,
+   "lat": 60.2616896,
+   "lon": 24.8557753,
+   "tags": {
+    "name": "Myyrmäen apteekki",
+    "addr:street": "Jönsaksentie",
+    "addr:housenumber": "6",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 5306340",
+    "website": "https://www.myyrmaenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-22:00; Sa 08:00-20:00; Su 10:00-20:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4287428894,
+   "lat": 60.2096373,
+   "lon": 25.0861521,
+   "tags": {
+    "name": "Apteekki Easton",
+    "addr:street": "Kauppakartanonkatu",
+    "addr:housenumber": "3",
+    "addr:city": "Helsinki",
+    "phone": "+35893436050",
+    "website": "https://www.apteekkieaston.fi/",
+    "opening_hours": "Mo-Fr 09:00-21:00; Sa 09:00-19:00; Su 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4529241105,
+   "lat": 60.159947,
+   "lon": 24.8809948,
+   "tags": {
+    "name": "Lauttiksen Apteekki",
+    "addr:street": "Lauttasaarentie",
+    "addr:housenumber": "28",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 671415",
+    "website": "https://lauttasaarenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa 10:00-18:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4547787710,
+   "lat": 60.2922775,
+   "lon": 25.041818,
+   "tags": {
+    "name": "Tikkurilan Asema apteekki",
+    "brand": "Avainapteekit",
+    "addr:street": "Asematie",
+    "addr:housenumber": "4-10",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 86036501",
+    "website": "https://www.asemaapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4552845289,
+   "lat": 60.2382545,
+   "lon": 25.1103601,
+   "tags": {
+    "name": "Mellunmäen Uusi Apteekki",
+    "addr:street": "Pallaksentie",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+358 20 7940800",
+    "website": "https://mellunmaenuusiapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-19:00; Sa 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4727972444,
+   "lat": 60.1696685,
+   "lon": 24.943445,
+   "tags": {
+    "name": "Kluuvin apteekki",
+    "addr:street": "Keskuskatu",
+    "addr:housenumber": "7",
+    "addr:city": "Helsinki",
+    "phone": "+35896213663",
+    "website": "https://www.kluuvinapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 11:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4743586853,
+   "lat": 60.2729568,
+   "lon": 24.9728303,
+   "tags": {
+    "name": "Yliopiston apteekki",
+    "operator": "Helsingin yliopisto",
+    "addr:street": "Tammiston kauppatie",
+    "addr:housenumber": "9",
+    "addr:city": "Vantaa",
+    "phone": "+358 300 20200",
+    "website": "https://www.yliopistonapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-22:00; Sa 08:00-21:00; Su 10:00-21:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4757320221,
+   "lat": 60.2282282,
+   "lon": 24.9638544,
+   "tags": {
+    "name": "Oulunkylän apteekki",
+    "addr:street": "Kylänvanhimmantie",
+    "addr:housenumber": "29",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 7562990",
+    "website": "http://oulunkylanapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-18:00; Sa 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4989673436,
+   "lat": 60.2911626,
+   "lon": 24.9645366,
+   "tags": {
+    "name": "Jumbon Apteekki",
+    "addr:street": "Vantaanportinkatu",
+    "addr:housenumber": "3",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 7743 780",
+    "website": "https://www.vantaanportinapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa 09:00-20:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 5430924421,
+   "lat": 60.3100104,
+   "lon": 25.0312322,
+   "tags": {
+    "name": "Simonkylän Uusi Apteekki",
+    "addr:street": "Leinikkitie",
+    "addr:housenumber": "22",
+    "addr:city": "Vantaa",
+    "phone": "+358 50 5903662",
+    "website": "https://simonkylan.fi/",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 09:00-17:00; Su 11:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 5870791853,
+   "lat": 60.1850364,
+   "lon": 24.8249599,
+   "tags": {
+    "name": "Otaniemen sivuapteekki",
+    "addr:street": "Otaniementie",
+    "addr:housenumber": "12",
+    "addr:city": "Espoo",
+    "phone": "+3589460440",
+    "website": "https://www.ainoapteekki.fi",
+    "opening_hours": "Mo-Fr 10:00-20:00; Sa 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6030442456,
+   "lat": 60.2370091,
+   "lon": 24.8909293,
+   "tags": {
+    "name": "Kaaren Uusi Apteekki",
+    "operator": "Kaaren Uusi Apteekki",
+    "addr:street": "Kantelettarentie",
+    "addr:housenumber": "1",
+    "addr:city": "Helsinki",
+    "phone": "+358 29 1703830",
+    "website": "https://kaarenuusiapteekki.hyma.fi/",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 10:00-19:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6049453002,
+   "lat": 60.1680374,
+   "lon": 24.9423205,
+   "tags": {
+    "name": "Erottajan Apteekki",
+    "addr:street": "Mannerheimintie",
+    "addr:housenumber": "1",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 622 9930",
+    "website": "https://www.erottajanapteekki.com/",
+    "opening_hours": "Mo-Fr 10:00-20:00; Sa 10:00-19:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6060938290,
+   "lat": 60.1866356,
+   "lon": 24.9785599,
+   "tags": {
+    "name": "Kalasataman apteekki",
+    "addr:street": "Hermannin rantatie",
+    "addr:housenumber": "5",
+    "addr:city": "Helsinki",
+    "phone": "+35897744850",
+    "website": "https://www.kalasatamanapteekki.fi",
+    "opening_hours": "Mo-Fr 09:00-21:00; Sa 10:00-19:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 7416618632,
+   "lat": 60.1986843,
+   "lon": 24.9297182,
+   "tags": {
+    "name": "Apteekki 51",
+    "addr:street": "Firdonkatu",
+    "addr:housenumber": "2b",
+    "addr:city": "Helsinki",
+    "phone": "+35897745620",
+    "website": "https://www.apteekki51.fi/",
+    "opening_hours": "Mo-Sa 09:00-21:00; Su,PH 11:00-19:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 7417354623,
+   "lat": 60.2215267,
+   "lon": 25.1403681,
+   "tags": {
+    "name": "Vuoapteekki",
+    "addr:street": "Mustalahdentie",
+    "addr:housenumber": "4",
+    "addr:city": "Helsinki",
+    "phone": "+358 10 4067180",
+    "website": "https://vuoapteekki.fi",
+    "opening_hours": "Mo-Fr 09:00-19:00; Sa 10:00-16:00; Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 7466155781,
+   "lat": 60.1629382,
+   "lon": 24.776675,
+   "tags": {
+    "name": "Haukilahden sivuapteekki",
+    "operator": "Matinkylän apteekki",
+    "addr:street": "Ukkohauentie",
+    "addr:housenumber": "11-13",
+    "addr:city": "Espoo",
+    "phone": "+358 9 4524464",
+    "website": "https://matinkylanapteekki.fi/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 8705159717,
+   "lat": 60.2425527,
+   "lon": 24.9957747,
+   "tags": {
+    "name": "Pukinmäen apteekki",
+    "addr:street": "Eskolankaari",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+358 50 4488514",
+    "website": "https://www.pukinmaenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 9507466597,
+   "lat": 60.2522799,
+   "lon": 25.0098189,
+   "tags": {
+    "name": "Malmin apteekki",
+    "addr:street": "Ala-Malmin tori",
+    "addr:housenumber": "3",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 5656080",
+    "website": "https://malminapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 09:00-17:00; Su 11:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 9532470796,
+   "lat": 60.1675982,
+   "lon": 24.962708,
+   "tags": {
+    "name": "Katajanokan apteekki",
+    "addr:street": "Kruunuvuorenkatu",
+    "addr:housenumber": "1",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 664207",
+    "website": "https://www.katajanokanapteekki.fi/",
+    "opening_hours": "Mo-Fr 10:00-18:00, Sa 10:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 9624203624,
+   "lat": 60.1493045,
+   "lon": 24.6561516,
+   "tags": {
+    "name": "Espoonlahden Apteekki",
+    "addr:street": "Espoonlahdenkatu",
+    "addr:housenumber": "8",
+    "addr:city": "Espoo",
+    "phone": "+358 9 8194 4540",
+    "website": "https://www.espoonlahdenapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 09:00-18:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 10187940420,
+   "lat": 60.2219139,
+   "lon": 24.6855628,
+   "tags": {
+    "name": "Jorvin apteekki",
+    "addr:street": "Karvasmäentie",
+    "addr:housenumber": "6",
+    "addr:city": "Espoo",
+    "phone": "+358505412378",
+    "website": "https://www.jorvinapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-24:00; Sa-Su 10:00-24:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 10721122141,
+   "lat": 60.1595527,
+   "lon": 24.9180723,
+   "tags": {
+    "name": "Atlas",
+    "addr:street": "Välimerenkatu",
+    "addr:housenumber": "8",
+    "addr:city": "Helsinki",
+    "phone": "+358103198100",
+    "website": "https://www.atlasapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 09:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 10923352640,
+   "lat": 60.1761227,
+   "lon": 24.8049555,
+   "tags": {
+    "name": "Aino Apteekki",
+    "addr:street": "Länsituuli",
+    "addr:housenumber": "5",
+    "addr:city": "Espoo",
+    "phone": "+358943915222",
+    "website": "https://www.ainoapteekki.fi",
+    "opening_hours": "Mo-Fr 08:30-20:00; Sa 10:00-19:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11030402266,
+   "lat": 60.1663008,
+   "lon": 24.7327205,
+   "tags": {
+    "name": "Olarin Uusi Apteekki",
+    "addr:street": "Komeetankatu",
+    "addr:housenumber": "2",
+    "addr:city": "Espoo",
+    "phone": "+358 20 7308790",
+    "website": "https://www.olarinuusiapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-21:00; Sa 10:00-18:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11069688965,
+   "lat": 60.2423739,
+   "lon": 25.1117529,
+   "tags": {
+    "name": "Länsimäen sivuapteekki",
+    "addr:street": "Kilpakuja",
+    "addr:housenumber": "1",
+    "addr:city": "Vantaa",
+    "phone": "+358 93922221",
+    "opening_hours": "Mo-Fr 08:30-16:30; Sa-Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11478522812,
+   "lat": 60.3177852,
+   "lon": 24.9680611,
+   "tags": {
+    "name": "Lentoaseman sivuapteekki",
+    "operator": "Tikkurilan Uusi Apteekki",
+    "addr:street": "Lentoasemantie",
+    "addr:housenumber": "1",
+    "addr:city": "Vantaa",
+    "website": "https://www.finavia.fi/fi/lentoasemat/helsinki-vantaa/ostokset/apteekki",
+    "opening_hours": "Mo-Su 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11498047464,
+   "lat": 60.2100888,
+   "lon": 25.0789371,
+   "tags": {
+    "name": "Apteekki Medena",
+    "addr:street": "Itäkatu",
+    "addr:housenumber": "1-5",
+    "addr:city": "Helsinki",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 10:00-19:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11690828325,
+   "lat": 60.2258574,
+   "lon": 24.8947036,
+   "tags": {
+    "name": "Pohjois-Haagan apteekki",
+    "addr:street": "Aino Acktén tie",
+    "addr:housenumber": "8",
+    "addr:city": "Helsinki",
+    "opening_hours": "Mo-Fr 09:00-18:00; Sa 10:00-15:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11771777459,
+   "lat": 60.1700011,
+   "lon": 24.9416154,
+   "tags": {
+    "name": "Apteekki CityCenter",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 10:00-17:00; Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 11813413769,
+   "lat": 60.2884261,
+   "lon": 24.9991583,
+   "tags": {
+    "name": "Apteekki Koivuhaka",
+    "addr:street": "Kuriiritie",
+    "addr:housenumber": "23-25",
+    "addr:city": "Vantaa"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12000572914,
+   "lat": 60.1657586,
+   "lon": 24.9488391,
+   "tags": {
+    "name": "Kaartin Apteekki"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12068642209,
+   "lat": 60.2731662,
+   "lon": 24.9690887,
+   "tags": {
+    "name": "Tammiston Uusi Apteekki",
+    "addr:street": "Säätökuja",
+    "addr:housenumber": "2b",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 3489889",
+    "website": "https://www.tammistonapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 10:00-16:00; Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12103860562,
+   "lat": 60.2165852,
+   "lon": 24.9000944,
+   "tags": {
+    "name": "Etelä-Haagan apteekki",
+    "addr:street": "Oskelantie",
+    "addr:housenumber": "1",
+    "addr:city": "Helsinki",
+    "phone": "+35895872600",
+    "website": "https://www.etela-haaganapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-18:00; Sa 09:00-14:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12119641130,
+   "lat": 60.1792723,
+   "lon": 24.949466,
+   "tags": {
+    "name": "Hakaniementorin apteekki",
+    "addr:street": "Siltasaarenkatu",
+    "addr:housenumber": "16",
+    "addr:city": "Helsinki",
+    "website": "https://www.hakaniementorinapteekki.fi/"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12178337690,
+   "lat": 60.1597151,
+   "lon": 24.9464381,
+   "tags": {
+    "name": "Kaivopuiston apteekki",
+    "addr:street": "Korkeavuorenkatu",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 655069",
+    "website": "https://www.kaivopuistonapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-19:00; Sa 10:00-16:00; Su off"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12361199708,
+   "lat": 60.1930061,
+   "lon": 24.946673,
+   "tags": {
+    "name": "Vallilan Uusi Apteekki",
+    "addr:street": "Bruno Granholmin kuja",
+    "addr:housenumber": "2",
+    "addr:city": "Helsinki",
+    "phone": "+358 29 170 0780",
+    "website": "https://www.vallilanuusiapteekki.fi",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 10:00-15:00; Su 12:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12812023126,
+   "lat": 60.3487266,
+   "lon": 25.0763369,
+   "tags": {
+    "name": "Korson uusi apteekki",
+    "addr:street": "Maakotkantie",
+    "addr:housenumber": "19",
+    "addr:city": "Vantaa",
+    "phone": "+358 3 06404011",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa-Su 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12883359598,
+   "lat": 60.1854616,
+   "lon": 24.5965113,
+   "tags": {
+    "name": "Lasihytin apteekki",
+    "phone": "+358 9 8016133",
+    "website": "https://www.lasihytinapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 10:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12974119669,
+   "lat": 60.2180034,
+   "lon": 24.8134656,
+   "tags": {
+    "name": "Sanitum Apteekki",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 10:00-19:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 12976930478,
+   "lat": 60.1700651,
+   "lon": 24.9416439,
+   "tags": {}
+  },
+  {
+   "type": "node",
+   "id": 13249964071,
+   "lat": 60.2081136,
+   "lon": 25.1446343,
+   "tags": {
+    "name": "Apteekki Kompassi",
+    "addr:street": "Tyynylaavantie",
+    "addr:housenumber": "5",
+    "addr:city": "Helsinki",
+    "website": "https://apteekkikompassi.fi/",
+    "opening_hours": "Mo-Fr 09:00-21:00; Sa 10:00-18:00; Su 12:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13375457172,
+   "lat": 60.3815574,
+   "lon": 24.7484837,
+   "tags": {
+    "name": "Klaukkalan Uusi Apteekki",
+    "addr:street": "Lepsämäntie",
+    "addr:housenumber": "2",
+    "addr:city": "Klaukkala",
+    "opening_hours": "Mo-Fr 08:30-20:00; Sa 09:00-17:00; Su 11:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13513936121,
+   "lat": 60.3142107,
+   "lon": 24.8468886,
+   "tags": {
+    "name": "Kivistön Apteekki",
+    "addr:street": "Topaasikuja",
+    "addr:housenumber": "8",
+    "addr:city": "Vantaa",
+    "phone": "+358 50 5511358",
+    "website": "https://www.kivistonapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:00-19:00; Sa 10:00-15:00; Su 12:00-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 13942171919,
+   "lat": 60.3505477,
+   "lon": 25.0798632,
+   "tags": {
+    "name": "Korson Apteekki",
+    "addr:street": "Metsolantie",
+    "addr:housenumber": "1",
+    "addr:city": "Vantaa",
+    "phone": "+358 9 838 6600",
+    "opening_hours": "Mo-Fr 08:00-20:00; Sa 08:30-16:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 14026600074,
+   "lat": 60.2035881,
+   "lon": 24.6585576,
+   "tags": {
+    "name": "Kiltakallion Apteekki",
+    "opening_hours": "Mo-Fr 08:30-20:00; Sa 09:00-17:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 14103612319,
+   "lat": 60.2104013,
+   "lon": 24.6356758,
+   "tags": {
+    "name": "Espoon keskustan apteekki",
+    "addr:street": "Teirinsyrjä",
+    "addr:housenumber": "2b",
+    "addr:city": "Espoo",
+    "website": "https://www.espoonkeskustanapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-19:00; Sa 10:00-18:00"
+   }
+  },
+  {
+   "type": "node",
+   "id": 14263832345,
+   "lat": 60.212036,
+   "lon": 25.0827534,
+   "tags": {
+    "name": "Itäkeskuksen Apteekki",
+    "addr:street": "Itäkatu",
+    "addr:housenumber": "1-7",
+    "addr:city": "Helsinki",
+    "phone": "+358103201130",
+    "website": "https://www.itakeskuksenapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 10:00-19:00; Su 10:00-18:00"
+   }
+  },
+  {
+   "type": "relation",
+   "id": 20401883,
+   "lat": 60.3177874,
+   "lon": 24.9648588,
+   "tags": {
+    "name": "Lentoaseman apteekki",
+    "website": "https://www.finavia.fi/fi/lentoasemat/helsinki-vantaa/ostokset/apteekki-0"
+   }
+  },
+  {
+   "type": "way",
+   "id": 926166294,
+   "lat": 60.170619,
+   "lon": 24.7637788,
+   "tags": {
+    "name": "Apteekki Niitty",
+    "addr:street": "Merituulentie",
+    "addr:housenumber": "36",
+    "addr:city": "Espoo",
+    "phone": "+358449820967",
+    "website": "https://www.apteekkiniitty.fi/",
+    "opening_hours": "Mo-Fr 08:30-20:00; Sa 10:00-18:00"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1011337574,
+   "lat": 60.1617703,
+   "lon": 24.7388748,
+   "tags": {
+    "name": "Matinkylän apteekki",
+    "addr:street": "Piispansilta",
+    "addr:housenumber": "11 T 63",
+    "addr:city": "Espoo",
+    "phone": "+358986766450",
+    "website": "https://www.matinkylanapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-21:00; Sa 09:00-19:00; Su 11:00-18:00"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1011337722,
+   "lat": 60.1606191,
+   "lon": 24.7399945,
+   "tags": {
+    "name": "Yliopiston Apteekki Iso Omena",
+    "addr:street": "Piispansilta",
+    "addr:housenumber": "11",
+    "addr:city": "Espoo",
+    "website": "https://www.yliopistonapteekki.fi/ajankohtaista/iso-omena",
+    "opening_hours": "Mo-Sa 08:00-22:00; Su 10:00-20:00"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1056063306,
+   "lat": 60.4005949,
+   "lon": 25.1010354,
+   "tags": {
+    "name": "Keravan keskusapteekki",
+    "addr:street": "Nikonkatu",
+    "addr:housenumber": "1",
+    "addr:city": "Kerava",
+    "phone": "+35892747930",
+    "website": "https://www.keravankeskusapteekki.fi/",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 10:00-15:00; Su 12:00-16:00"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1071331277,
+   "lat": 60.4020629,
+   "lon": 25.1036216,
+   "tags": {
+    "name": "Keravan 1. apteekki",
+    "addr:street": "Kauppakaari",
+    "addr:housenumber": "2",
+    "addr:city": "Kerava",
+    "phone": "+358 29 3400220",
+    "website": "https://keravanapteekki.fi/",
+    "opening_hours": "Mo-Fr 08:30-21:00; Sa 09:00-17:00; Su 12:00-17:00"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1079281942,
+   "lat": 60.1798269,
+   "lon": 25.051711,
+   "tags": {
+    "name": "Laajasalon Apteekki",
+    "addr:street": "Yliskylän puistokatu",
+    "addr:housenumber": "4",
+    "addr:city": "Helsinki",
+    "phone": "+358 9 6860030",
+    "website": "https://laajasalonapteekki.fi",
+    "opening_hours": "Mo-Fr 08:00-21:00; Sa 09:00-19:00; PH,Su 10:00-19:00"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1097114339,
+   "lat": 60.4042042,
+   "lon": 25.1409538,
+   "tags": {
+    "name": "Ahjon sivuapteekki",
+    "operator": "Keravan 1. apteekki",
+    "addr:street": "Kerananpolku",
+    "addr:housenumber": "1",
+    "addr:city": "Kerava",
+    "phone": "+358 29 3400228",
+    "website": "https://keravanapteekki.fi/",
+    "opening_hours": "Mo-Tu 10:00-18:00; We-Fr 10:00-17:00"
+   }
+  },
+  {
+   "type": "way",
+   "id": 1375681869,
+   "lat": 60.3179912,
+   "lon": 24.9653324,
+   "tags": {
+    "name": "Apteekkiplus",
+    "operator": "Vantaan IV apteekki",
+    "website": "https://www.finavia.fi/fi/lentoasemat/helsinki-vantaa/kaupat-ruoka/apteekkiplus",
+    "opening_hours": "Mo-Su 06:00-19:00"
+   }
+  }
+ ]
+}

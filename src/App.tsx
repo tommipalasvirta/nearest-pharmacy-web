@@ -152,6 +152,7 @@ export default function App() {
             origin={results.origin}
             openStatuses={results.openStatuses}
             openOnly={openOnly}
+            savedOn={results.savedOn}
             selectedId={selectedId}
             onSelect={toggleSelected}
           />

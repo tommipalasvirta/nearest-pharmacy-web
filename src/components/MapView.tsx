@@ -24,8 +24,9 @@ interface Props {
 }
 
 /** How many of the nearest pharmacies the initial view is fitted around. */
-const PHARMACIES_IN_VIEW = 5
+const PHARMACIES_IN_VIEW = 10
 const EDGE_MARGIN = 48
+const SMALLEST_EDGE_MARGIN = 20
 
 const originIcon = L.divIcon({ className: 'you-are-here', iconSize: [18, 18], iconAnchor: [9, 9] })
 
@@ -39,6 +40,19 @@ const pinIcon = (rank: number) => {
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   })
+}
+
+/**
+ * The part of the map that content should stay inside: clear of the floating
+ * UI, with a margin that gives way when the map is small.
+ */
+function framePadding(
+  map: L.Map,
+  { top, left }: MapInsets,
+): Pick<L.FitBoundsOptions, 'paddingTopLeft' | 'paddingBottomRight'> {
+  const size = map.getSize()
+  const margin = Math.max(SMALLEST_EDGE_MARGIN, Math.min(EDGE_MARGIN, (size.x - left) / 4, (size.y - top) / 4))
+  return { paddingTopLeft: [left + margin, top + margin], paddingBottomRight: [margin, margin] }
 }
 
 /**
@@ -57,13 +71,9 @@ export function MapView({ origin, pharmacies, selectedId, onSelect, routeTo, rou
 
   /** Pans just enough to bring the selected pin out from under the floating UI. */
   const revealSelected = () => {
+    const map = mapRef.current
     const marker = selectedIdRef.current && markersRef.current.get(selectedIdRef.current)
-    if (!marker) return
-    const { top, left } = getInsets()
-    mapRef.current?.panInside(marker.getLatLng(), {
-      paddingTopLeft: [left + EDGE_MARGIN, top + EDGE_MARGIN],
-      paddingBottomRight: [EDGE_MARGIN, EDGE_MARGIN],
-    })
+    if (map && marker) map.panInside(marker.getLatLng(), framePadding(map, getInsets()))
   }
   const revealSelectedRef = useRef(revealSelected)
   useEffect(() => {
@@ -126,11 +136,11 @@ export function MapView({ origin, pharmacies, selectedId, onSelect, routeTo, rou
       markersRef.current.set(pharmacy.id, marker)
     })
 
-    const { top, left } = getInsets()
+    // The results sheet has just changed the map's size; measure before framing.
+    map.invalidateSize({ animate: false })
     const inView = [origin, ...pharmacies.slice(0, PHARMACIES_IN_VIEW)]
     map.fitBounds(L.latLngBounds(inView.map(({ lat, lon }) => [lat, lon])), {
-      paddingTopLeft: [left + EDGE_MARGIN, top + EDGE_MARGIN],
-      paddingBottomRight: [EDGE_MARGIN, EDGE_MARGIN],
+      ...framePadding(map, getInsets()),
       maxZoom: pharmacies.length > 0 ? 16 : 13,
     })
   }, [origin, pharmacies, onSelect, getInsets])

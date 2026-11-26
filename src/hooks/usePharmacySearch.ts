@@ -19,6 +19,8 @@ export interface SearchResults {
   /** Nearest first, by walking distance where the router knew it. */
   pharmacies: Pharmacy[]
   radiusMeters: number
+  /** Set when live data was unavailable: the ISO date of the saved copy shown instead. */
+  savedOn?: string
   /** Open/closed right now, by pharmacy id. Refreshed while the results are shown. */
   openStatuses: Map<string, OpenStatus>
   region?: Region
@@ -70,10 +72,10 @@ export function usePharmacySearch() {
         const openStatuses = await evaluateOpeningHours(pharmacies, origin, region)
         if (signal.aborted) return
 
-        const { radiusMeters } = found
+        const { radiusMeters, savedOn } = found
         setState(
           pharmacies.length > 0
-            ? { status: 'results', origin: located, pharmacies, radiusMeters, openStatuses, region }
+            ? { status: 'results', origin: located, pharmacies, radiusMeters, savedOn, openStatuses, region }
             : { status: 'empty', origin: located, radiusMeters },
         )
       } catch {
