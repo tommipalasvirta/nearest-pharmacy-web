@@ -438,23 +438,6 @@ input {
   color: var(--led);
 }
 
-/* A caveat about the data, between the nearest pharmacy and the list. */
-.notice {
-  padding: 0.75rem 1.25rem 0;
-  font-size: 0.875rem;
-  color: var(--muted);
-}
-
-@media (min-width: 56rem) {
-  .notice {
-    flex: none;
-    padding: 0.6rem 1.25rem;
-    border-radius: var(--radius);
-    background: var(--surface);
-    box-shadow: var(--float-shadow);
-  }
-}
-
 /* Nearest pharmacy -------------------------------------------------------- */
 
 .nearest {

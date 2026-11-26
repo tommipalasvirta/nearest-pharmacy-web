@@ -14,7 +14,7 @@ interface Props {
   /** Whether the list has been narrowed to pharmacies that are open now. */
   openOnly: boolean
   onToggleOpenOnly: () => void
-  /** Set when live data was unavailable: the ISO date of the saved copy being shown. */
+  /** Set when the saved copy is being shown instead of live data: its ISO date. */
   savedOn?: string
   selectedId: string | null
   onSelect: (id: string) => void
@@ -88,12 +88,6 @@ export function PharmacyList({
         <PharmacyActions pharmacy={nearest} origin={origin} />
       </article>
 
-      {savedOn && (
-        <p className="notice" role="status">
-          Live data is unavailable. Showing a copy saved on {formatDate(savedOn)}.
-        </p>
-      )}
-
       {(others.length > 0 || openOnly) && (
         <section className="list-card" data-open={listOpen} aria-labelledby="others-heading">
           <div className="list-card__heading">
@@ -156,6 +150,7 @@ export function PharmacyList({
               {nearest.walk
                 ? 'Distances and times follow walking routes.'
                 : 'Distances are straight lines, so walking routes will be a little longer.'}
+              {savedOn && ` Pharmacy data saved on ${formatDate(savedOn)}.`}
             </p>
           </div>
         </section>

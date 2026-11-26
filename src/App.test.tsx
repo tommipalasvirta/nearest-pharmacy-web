@@ -298,12 +298,12 @@ describe('when Overpass and Nominatim are down', () => {
     })
   })
 
-  it('shows the saved copy of the pharmacies, and says so', async () => {
+  it('shows the saved copy of the pharmacies, with its date in the fine print', async () => {
     render(<App />)
     await useMyLocation()
 
     expect(await screen.findByText('Nearest to you')).toBeVisible()
-    expect(screen.getByText(/Showing a copy saved on \d+ \w+ \d{4}/)).toBeVisible()
+    expect(screen.getByText(/Pharmacy data saved on \d+ \w+ \d{4}/)).toBeInTheDocument()
   })
 
   it('still finds a typed address, with the second geocoder', async () => {
@@ -314,7 +314,7 @@ describe('when Overpass and Nominatim are down', () => {
 
     expect(await screen.findByText('Nearest to you')).toBeVisible()
     expect(screen.getByRole('searchbox')).toHaveValue('Mannerheimintie 5, Helsinki')
-    expect(screen.getByText(/Showing a copy saved on/)).toBeVisible()
+    expect(screen.getByText(/Pharmacy data saved on/)).toBeInTheDocument()
   })
 })
 

@@ -100,8 +100,8 @@ As a last resort there is a **saved copy of the Nordic countries' pharmacies** i
 repository ([`src/data/nordic-pharmacies.json`](src/data/nordic-pharmacies.json):
 3,632 pharmacies in Denmark, Finland, Iceland, Norway and Sweden, a 160 kB chunk
 after compression, downloaded only when needed). It is used when both live sources
-fail, or when neither has answered within 8 seconds, and the app then says which day
-the copy is from. With it, the app answers anywhere in those countries even when
+fail, or when neither has answered within 8 seconds, and the list's fine print then gives the
+date of the copy. With it, the app answers anywhere in those countries even when
 every public pharmacy source is down. `npm run snapshot` refreshes it from Overpass.
 
 Address search has a backup of its own: **Photon**, a second public geocoder built
