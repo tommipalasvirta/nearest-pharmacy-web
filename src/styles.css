@@ -685,10 +685,20 @@ input {
   font-weight: 600;
 }
 
+.result__trip {
+  display: grid;
+  justify-items: end;
+  white-space: nowrap;
+}
+
 .result__distance {
   font-weight: 700;
-  white-space: nowrap;
   line-height: 1.75rem;
+}
+
+.result__minutes {
+  font-size: 0.875rem;
+  color: var(--muted);
 }
 
 .actions {

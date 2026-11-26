@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { buildQuery, OverpassError, searchOverpass, toPharmacies, type OverpassElement } from './overpass'
-import { context, HELSINKI, jsonResponse, north } from './testing'
+import { context, HELSINKI, jsonResponse, north } from '../test/fixtures'
 
 const node = (id: number, latOffset: number, tags: Record<string, string> = {}): OverpassElement => ({
   type: 'node',

@@ -1,5 +1,4 @@
 import type { Coordinates } from './geo'
-import type { OpenStatus } from './openingHours'
 
 /** The point the search is centred on: the device position or a typed address. */
 export interface Origin extends Coordinates {
@@ -8,16 +7,26 @@ export interface Origin extends Coordinates {
   label?: string
 }
 
+/** A walking route from the origin, as measured by the router. */
+export interface Walk {
+  meters: number
+  minutes: number
+}
+
 export interface Pharmacy extends Coordinates {
   /** OpenStreetMap identity, e.g. "node/123". */
   id: string
   name: string
+  /** Straight-line distance from the origin. */
   distanceMeters: number
+  /** Absent when the router did not answer or found no way there on foot. */
+  walk?: Walk
   address?: string
   phone?: string
   website?: string
   /** Raw OSM `opening_hours` value. */
   openingHours?: string
-  /** Derived from `openingHours`; absent when the tag is missing or unparseable. */
-  openStatus?: OpenStatus
 }
+
+/** The distance to show and rank by: along the walking route when it is known. */
+export const travelMeters = (pharmacy: Pharmacy) => pharmacy.walk?.meters ?? pharmacy.distanceMeters

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { haversineMeters } from './geo'
 import { boundingBox, searchNominatim, toPharmacies, type NominatimPlace } from './nominatim'
-import { context, HELSINKI, jsonResponse, north } from './testing'
+import { context, HELSINKI, jsonResponse, north } from '../test/fixtures'
 
 const place = (id: number, latOffset: number, extra: Partial<NominatimPlace> = {}): NominatimPlace => ({
   osm_type: 'node',

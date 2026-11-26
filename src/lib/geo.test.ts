@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDistance, haversineMeters, walkingMinutes } from './geo'
+import { formatDistance, haversineMeters } from './geo'
 
 const HELSINKI = { lat: 60.1699, lon: 24.9384 }
 const TAMPERE = { lat: 61.4978, lon: 23.761 }
@@ -33,12 +33,5 @@ describe('formatDistance', () => {
     [14_300, '14 km'],
   ])('formats %d m as %s', (meters, expected) => {
     expect(formatDistance(meters)).toBe(expected)
-  })
-})
-
-describe('walkingMinutes', () => {
-  it('assumes about 80 metres per minute and never reports zero', () => {
-    expect(walkingMinutes(400)).toBe(5)
-    expect(walkingMinutes(10)).toBe(1)
   })
 })

@@ -1,16 +1,25 @@
 import { useEffect, useState } from 'react'
-import { formatDistance, walkingMinutes } from '../lib/geo'
-import type { Origin, Pharmacy } from '../lib/types'
+import { formatDistance } from '../lib/geo'
+import type { OpenStatus } from '../lib/openingHours'
+import { travelMeters, type Origin, type Pharmacy } from '../lib/types'
 import { OpenStatusLine, PharmacyActions } from './PharmacyDetails'
 
 interface Props {
   pharmacies: Pharmacy[]
   origin: Origin
+  openStatuses: Map<string, OpenStatus>
   selectedId: string | null
   onSelect: (id: string) => void
 }
 
+/** Beyond this, a walking time is no longer a useful thing to show. */
 const WALKABLE_METERS = 3_000
+
+/** What the distance next to a pharmacy means: "6 min walk", or a caveat. */
+function describeTrip({ walk }: Pharmacy): string {
+  if (!walk) return 'in a straight line'
+  return walk.meters <= WALKABLE_METERS ? `${walk.minutes} min walk` : 'on foot'
+}
 
 /**
  * The nearest pharmacy as the headline answer, then the rest as a ranked list.
@@ -18,7 +27,7 @@ const WALKABLE_METERS = 3_000
  * On wide screens both float over the map. On phones this is a sheet under the
  * map: the nearest pharmacy is always visible and the list opens on demand.
  */
-export function PharmacyList({ pharmacies, origin, selectedId, onSelect }: Props) {
+export function PharmacyList({ pharmacies, origin, openStatuses, selectedId, onSelect }: Props) {
   const [nearest, ...others] = pharmacies
   const [listOpened, setListOpened] = useState(false)
 
@@ -45,10 +54,8 @@ export function PharmacyList({ pharmacies, origin, selectedId, onSelect }: Props
       <article className="nearest" data-selected={selectedId === nearest.id}>
         <p className="nearest__kicker">Nearest to you</p>
         <p className="nearest__distance">
-          {formatDistance(nearest.distanceMeters)}
-          {nearest.distanceMeters <= WALKABLE_METERS && (
-            <span className="nearest__walk">about {walkingMinutes(nearest.distanceMeters)} min on foot</span>
-          )}
+          {formatDistance(travelMeters(nearest))}
+          <span className="nearest__walk">{describeTrip(nearest)}</span>
         </p>
         <h1 className="nearest__name">
           <button type="button" onClick={() => onSelect(nearest.id)}>
@@ -57,7 +64,7 @@ export function PharmacyList({ pharmacies, origin, selectedId, onSelect }: Props
         </h1>
         {nearest.address && <p className="nearest__address">{nearest.address}</p>}
         <p>
-          <OpenStatusLine pharmacy={nearest} />
+          <OpenStatusLine pharmacy={nearest} status={openStatuses.get(nearest.id)} />
         </p>
         <PharmacyActions pharmacy={nearest} origin={origin} />
       </article>
@@ -94,9 +101,14 @@ export function PharmacyList({ pharmacies, origin, selectedId, onSelect }: Props
                       <span className="result__text">
                         <span className="result__name">{pharmacy.name}</span>
                         {pharmacy.address && <span className="result__address">{pharmacy.address}</span>}
-                        <OpenStatusLine pharmacy={pharmacy} />
+                        <OpenStatusLine pharmacy={pharmacy} status={openStatuses.get(pharmacy.id)} />
                       </span>
-                      <span className="result__distance">{formatDistance(pharmacy.distanceMeters)}</span>
+                      <span className="result__trip">
+                        <span className="result__distance">{formatDistance(travelMeters(pharmacy))}</span>
+                        {pharmacy.walk && pharmacy.walk.meters <= WALKABLE_METERS && (
+                          <span className="result__minutes">{pharmacy.walk.minutes} min</span>
+                        )}
+                      </span>
                     </button>
                     {selected && <PharmacyActions pharmacy={pharmacy} origin={origin} />}
                   </li>
@@ -104,7 +116,9 @@ export function PharmacyList({ pharmacies, origin, selectedId, onSelect }: Props
               })}
             </ol>
             <p className="fine-print">
-              Distances are straight lines, so walking routes will be a little longer.
+              {nearest.walk
+                ? 'Distances and times follow walking routes.'
+                : 'Distances are straight lines, so walking routes will be a little longer.'}
             </p>
           </div>
         </section>

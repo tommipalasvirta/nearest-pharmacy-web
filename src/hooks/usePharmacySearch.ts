@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { GeolocationError, getDevicePosition } from '../lib/geolocation'
 import { geocodeAddress, reverseGeocode } from '../lib/nominatim'
-import { withOpenStatus, type Region } from '../lib/openingHours'
+import { evaluateOpeningHours, type OpenStatus, type Region } from '../lib/openingHours'
+import { rankByWalkingDistance } from '../lib/routing'
 import { findNearbyPharmacies } from '../lib/search'
 import type { Origin, Pharmacy } from '../lib/types'
 
@@ -12,13 +13,27 @@ export type SearchProblem =
   | 'address-not-found'
   | 'network'
 
+export interface SearchResults {
+  status: 'results'
+  origin: Origin
+  /** Nearest first, by walking distance where the router knew it. */
+  pharmacies: Pharmacy[]
+  radiusMeters: number
+  /** Open/closed right now, by pharmacy id. Refreshed while the results are shown. */
+  openStatuses: Map<string, OpenStatus>
+  region?: Region
+}
+
 export type SearchState =
   | { status: 'idle' }
   | { status: 'locating'; via: 'device' | 'address' }
   | { status: 'searching'; origin: Origin }
-  | { status: 'results'; origin: Origin; pharmacies: Pharmacy[]; radiusMeters: number }
+  | SearchResults
   | { status: 'empty'; origin: Origin; radiusMeters: number }
   | { status: 'error'; problem: SearchProblem; origin?: Origin; query?: string }
+
+/** How often "Open until 19:00" is re-checked against the clock. */
+const OPEN_STATUS_REFRESH_MS = 60_000
 
 /**
  * Owns the whole "where am I → what's nearby" flow as one state machine.
@@ -50,13 +65,16 @@ export function usePharmacySearch() {
         ])
         const located: Origin = { ...origin, label: origin.label ?? (place?.label || undefined) }
         const region = knownRegion ?? place?.region
-        const pharmacies = await withOpenStatus(found.pharmacies, origin, region)
+
+        const pharmacies = await rankByWalkingDistance(origin, found.pharmacies, { signal })
+        const openStatuses = await evaluateOpeningHours(pharmacies, origin, region)
         if (signal.aborted) return
 
+        const { radiusMeters } = found
         setState(
           pharmacies.length > 0
-            ? { status: 'results', origin: located, pharmacies, radiusMeters: found.radiusMeters }
-            : { status: 'empty', origin: located, radiusMeters: found.radiusMeters },
+            ? { status: 'results', origin: located, pharmacies, radiusMeters, openStatuses, region }
+            : { status: 'empty', origin: located, radiusMeters },
         )
       } catch {
         if (!signal.aborted) setState({ status: 'error', problem: 'network', origin })
@@ -64,6 +82,37 @@ export function usePharmacySearch() {
     },
     [],
   )
+
+  // Opening hours go stale while the page stays open, so re-evaluate them every
+  // minute and whenever the tab comes back into view. Only the statuses change:
+  // the list keeps its order and the map is left alone.
+  const results = state.status === 'results' ? state : undefined
+  const pharmacies = results?.pharmacies
+  const origin = results?.origin
+  const region = results?.region
+  useEffect(() => {
+    if (!pharmacies || !origin) return
+    let cancelled = false
+    const refresh = async () => {
+      const openStatuses = await evaluateOpeningHours(pharmacies, origin, region).catch(() => undefined)
+      if (cancelled || !openStatuses) return
+      setState((current) =>
+        current.status === 'results' && current.pharmacies === pharmacies
+          ? { ...current, openStatuses }
+          : current,
+      )
+    }
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') void refresh()
+    }
+    const timer = setInterval(refresh, OPEN_STATUS_REFRESH_MS)
+    document.addEventListener('visibilitychange', refreshWhenVisible)
+    return () => {
+      cancelled = true
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', refreshWhenVisible)
+    }
+  }, [pharmacies, origin, region])
 
   /** Search around the device's current position. */
   const locate = useCallback(async () => {

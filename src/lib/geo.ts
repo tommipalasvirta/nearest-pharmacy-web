@@ -4,7 +4,6 @@ export interface Coordinates {
 }
 
 export const EARTH_RADIUS_METERS = 6_371_008.8
-const WALKING_METERS_PER_MINUTE = 80 // ~4.8 km/h
 
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
 
@@ -23,9 +22,4 @@ export function formatDistance(meters: number): string {
   if (meters < 995) return `${Math.max(10, Math.round(meters / 10) * 10)} m`
   const km = meters / 1000
   return `${km < 9.95 ? km.toFixed(1) : Math.round(km)} km`
-}
-
-/** Rough walking time for a straight-line distance; real routes are longer. */
-export function walkingMinutes(meters: number): number {
-  return Math.max(1, Math.round(meters / WALKING_METERS_PER_MINUTE))
 }

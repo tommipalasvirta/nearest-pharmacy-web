@@ -1,17 +1,21 @@
-import { describeOpenStatus } from '../lib/openingHours'
+import type { OpenStatus } from '../lib/openingHours'
 import type { Origin, Pharmacy } from '../lib/types'
 
+interface StatusProps {
+  pharmacy: Pharmacy
+  status: OpenStatus | undefined
+}
+
 /** Open/closed line. Falls back to the raw OSM hours, then to saying they are unknown. */
-export function OpenStatusLine({ pharmacy }: { pharmacy: Pharmacy }) {
-  const { openStatus, openingHours } = pharmacy
-  if (openStatus) {
-    return (
-      <span className={`status ${openStatus.isOpen ? 'status--open' : 'status--closed'}`}>
-        {describeOpenStatus(openStatus)}
-      </span>
-    )
+export function OpenStatusLine({ pharmacy, status }: StatusProps) {
+  if (status) {
+    return <span className={`status ${status.isOpen ? 'status--open' : 'status--closed'}`}>{status.label}</span>
   }
-  return <span className="status">{openingHours ? `Hours: ${openingHours}` : 'Opening hours not listed'}</span>
+  return (
+    <span className="status">
+      {pharmacy.openingHours ? `Hours: ${pharmacy.openingHours}` : 'Opening hours not listed'}
+    </span>
+  )
 }
 
 /** Directions, call and website links for one pharmacy. */

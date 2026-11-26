@@ -6,6 +6,7 @@ import { PharmacyList } from './components/PharmacyList'
 import { SearchBar } from './components/SearchBar'
 import { StatusMessage } from './components/StatusMessage'
 import { usePharmacySearch } from './hooks/usePharmacySearch'
+import { useWalkingRoute } from './hooks/useWalkingRoute'
 import { hasLocationPermission } from './lib/geolocation'
 import type { Pharmacy } from './lib/types'
 
@@ -49,6 +50,10 @@ export default function App() {
   const pharmacies = state.status === 'results' ? state.pharmacies : NO_PHARMACIES
   const busy = state.status === 'locating' || state.status === 'searching'
 
+  // The line on the map leads to the selected pharmacy, or else the nearest.
+  const routeTo = pharmacies.find((pharmacy) => pharmacy.id === selectedId) ?? pharmacies[0]
+  const route = useWalkingRoute(origin, routeTo)
+
   const status = (
     <div className="live" aria-live="polite">
       <StatusMessage state={state} onRetry={retry} />
@@ -88,6 +93,8 @@ export default function App() {
         pharmacies={pharmacies}
         selectedId={selectedId}
         onSelect={toggleSelected}
+        routeTo={routeTo}
+        route={route}
         getInsets={getMapInsets}
       />
       <div className="overlay" ref={overlayRef}>
@@ -105,6 +112,7 @@ export default function App() {
           <PharmacyList
             pharmacies={state.pharmacies}
             origin={state.origin}
+            openStatuses={state.openStatuses}
             selectedId={selectedId}
             onSelect={toggleSelected}
           />
