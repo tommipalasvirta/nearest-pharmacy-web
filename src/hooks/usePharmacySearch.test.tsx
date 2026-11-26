@@ -64,6 +64,48 @@ describe('usePharmacySearch', () => {
     expect(result.current.state.status).toBe('results')
   })
 
+  it('goes on without the area name once it has waited long enough for it', async () => {
+    // The wait is over at once, and the geocoder only ever answers by being cancelled.
+    vi.spyOn(AbortSignal, 'timeout').mockReturnValue(AbortSignal.abort())
+    vi.mocked(reverseGeocode).mockImplementation(
+      (_position, signal) => new Promise((_resolve, reject) => signal?.aborted && reject(signal.reason)),
+    )
+    vi.mocked(findNearbyPharmacies).mockResolvedValue(found(pharmacy(1, 'Kallion Apteekki')))
+    const { result } = renderHook(() => usePharmacySearch())
+
+    await act(() => result.current.locate())
+
+    expect(result.current.state).toMatchObject({ status: 'results', origin: { label: undefined } })
+  })
+
+  it('shows the pharmacies with their raw hours when the opening-hours parser cannot be loaded', async () => {
+    vi.mocked(evaluateOpeningHours).mockRejectedValue(new TypeError('Failed to fetch dynamically imported module'))
+    vi.mocked(findNearbyPharmacies).mockResolvedValue(found(pharmacy(1, 'Kallion Apteekki')))
+    const { result } = renderHook(() => usePharmacySearch())
+
+    await act(() => result.current.locate())
+
+    expect(result.current.state).toMatchObject({ status: 'results', openStatuses: new Map() })
+  })
+
+  it('remembers the country and region when a failed address search is retried', async () => {
+    const region = { countryCode: 'fi', state: 'Uusimaa' }
+    vi.mocked(geocodeAddress).mockResolvedValue({ ...HELSINKI, label: 'Mannerheimintie 5, Helsinki', region })
+    vi.mocked(findNearbyPharmacies)
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValue(found(pharmacy(1, 'Kallion Apteekki')))
+    const { result } = renderHook(() => usePharmacySearch())
+
+    await act(() => result.current.searchAddress('Mannerheimintie 5'))
+    expect(result.current.state).toMatchObject({ status: 'error', problem: 'network' })
+
+    await act(async () => result.current.retry())
+
+    expect(result.current.state.status).toBe('results')
+    expect(vi.mocked(findNearbyPharmacies).mock.lastCall?.[1]).toMatchObject({ countryCode: 'fi' })
+    expect(vi.mocked(evaluateOpeningHours).mock.lastCall?.[2]).toEqual(region)
+  })
+
   it('keeps only the newest search when an older one answers late', async () => {
     vi.mocked(geocodeAddress).mockImplementation(async (query) => ({ ...HELSINKI, label: query }))
     let answerSlowSearch!: (result: SearchResult) => void

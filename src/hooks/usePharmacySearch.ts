@@ -32,7 +32,10 @@ export type SearchState =
   | { status: 'searching'; origin: Origin }
   | SearchResults
   | { status: 'empty'; origin: Origin; radiusMeters: number }
-  | { status: 'error'; problem: SearchProblem; origin?: Origin; query?: string }
+  | { status: 'error'; problem: SearchProblem; origin?: Origin; region?: Region; query?: string }
+
+/** How long a search waits to learn the area's name before going on without it. */
+const PLACE_NAME_WAIT_MS = 3_000
 
 /** How often "Open until 19:00" is re-checked against the clock. */
 const OPEN_STATUS_REFRESH_MS = 60_000
@@ -40,8 +43,8 @@ const OPEN_STATUS_REFRESH_MS = 60_000
 /**
  * Owns the whole "where am I → what's nearby" flow as one state machine.
  *
- * Starting a new search aborts the previous one, so a slow response can never
- * overwrite a newer result.
+ * Starting a new search aborts the previous one, so a slow search can be
+ * replaced and its response can never overwrite a newer result.
  */
 export function usePharmacySearch() {
   const [state, setState] = useState<SearchState>({ status: 'idle' })
@@ -60,16 +63,20 @@ export function usePharmacySearch() {
     async (origin: Origin, knownRegion: Region | undefined, signal: AbortSignal) => {
       setState({ status: 'searching', origin })
       try {
-        // Naming the area is a nicety; the search must not fail because of it.
+        // Naming the area is a nicety; the search must not fail or drag because of it.
+        const naming = AbortSignal.any([signal, AbortSignal.timeout(PLACE_NAME_WAIT_MS)])
         const [found, place] = await Promise.all([
-          findNearbyPharmacies(origin, { signal }),
-          origin.label ? undefined : reverseGeocode(origin, signal).catch(() => undefined),
+          findNearbyPharmacies(origin, { signal, countryCode: knownRegion?.countryCode }),
+          origin.label ? undefined : reverseGeocode(origin, naming).catch(() => undefined),
         ])
         const located: Origin = { ...origin, label: origin.label ?? (place?.label || undefined) }
         const region = knownRegion ?? place?.region
 
         const pharmacies = await rankByWalkingDistance(origin, found.pharmacies, { signal })
-        const openStatuses = await evaluateOpeningHours(pharmacies, origin, region)
+        // If the parser cannot be loaded, the pharmacies are shown with their raw hours.
+        const openStatuses = await evaluateOpeningHours(pharmacies, origin, region).catch(
+          () => new Map<string, OpenStatus>(),
+        )
         if (signal.aborted) return
 
         const { radiusMeters, savedOn } = found
@@ -79,7 +86,7 @@ export function usePharmacySearch() {
             : { status: 'empty', origin: located, radiusMeters },
         )
       } catch {
-        if (!signal.aborted) setState({ status: 'error', problem: 'network', origin })
+        if (!signal.aborted) setState({ status: 'error', problem: 'network', origin, region: knownRegion })
       }
     },
     [],
@@ -155,7 +162,7 @@ export function usePharmacySearch() {
   /** Repeat the search that just failed. */
   const retry = useCallback(() => {
     if (state.status !== 'error') return
-    if (state.origin) void searchAround(state.origin, undefined, beginRequest())
+    if (state.origin) void searchAround(state.origin, state.region, beginRequest())
     else if (state.query) void searchAddress(state.query)
     else void locate()
   }, [state, beginRequest, searchAround, searchAddress, locate])

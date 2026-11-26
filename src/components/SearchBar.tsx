@@ -6,7 +6,6 @@ interface Props {
   place?: string
   onLocate: () => void
   onSearchAddress: (query: string) => void
-  busy: boolean
 }
 
 /**
@@ -14,7 +13,7 @@ interface Props {
  * the address field, and a submit button. Render it with `key={place}` so the
  * field resets when the search moves somewhere else.
  */
-export function SearchBar({ place = '', onLocate, onSearchAddress, busy }: Props) {
+export function SearchBar({ place = '', onLocate, onSearchAddress }: Props) {
   const [query, setQuery] = useState(place)
 
   const submit = (event: FormEvent) => {
@@ -29,7 +28,6 @@ export function SearchBar({ place = '', onLocate, onSearchAddress, busy }: Props
         type="button"
         className="icon-button"
         onClick={onLocate}
-        disabled={busy}
         aria-label="Use my location"
         title="Use my location"
       >
@@ -51,7 +49,7 @@ export function SearchBar({ place = '', onLocate, onSearchAddress, busy }: Props
       <button
         type="submit"
         className="icon-button"
-        disabled={busy || query.trim() === ''}
+        disabled={query.trim() === ''}
         aria-label="Search"
         title="Search"
       >

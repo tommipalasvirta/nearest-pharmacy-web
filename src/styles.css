@@ -131,7 +131,7 @@ input {
 }
 
 .address-search input::placeholder {
-  color: #8a9a91;
+  color: #66776e;
 }
 
 .address-search input:hover {
@@ -374,7 +374,7 @@ input {
 }
 
 .search-bar input::placeholder {
-  color: #8a9a91;
+  color: #66776e;
 }
 
 .icon-button {

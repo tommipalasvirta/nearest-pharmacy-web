@@ -330,3 +330,44 @@ describe('searching by address', () => {
     expect(screen.getByRole('searchbox')).toHaveValue('Mannerheimintie 5, Helsinki')
   })
 })
+
+describe('searching again from the results', () => {
+  const searchFor = async (address: string) => {
+    await userEvent.clear(screen.getByRole('searchbox'))
+    await userEvent.type(screen.getByRole('searchbox'), address)
+    await userEvent.click(screen.getByRole('button', { name: 'Search' }))
+  }
+
+  it('keeps the map and the results on screen while the new address is looked up', async () => {
+    let answer = (_response: Response) => {}
+    const geocoding = new Promise<Response>((resolve) => (answer = resolve))
+    stubNetwork({ geocode: () => geocoding as unknown as Response })
+    render(<App />)
+    await useMyLocation()
+    await screen.findByText('Nearest to you')
+
+    await searchFor('Mannerheimintie 5')
+
+    expect(await screen.findByText(/Looking up that address/)).toBeVisible()
+    expect(screen.getByTestId('map')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Kallion Apteekki' })).toBeVisible()
+    expect(screen.queryByRole('heading', { name: 'Find the nearest pharmacy' })).not.toBeInTheDocument()
+
+    answer(jsonResponse([]))
+    expect(await screen.findByRole('alert')).toHaveTextContent('No place matches that address')
+    expect(screen.getByRole('heading', { name: 'Kallion Apteekki' })).toBeVisible()
+    expect(screen.getByRole('searchbox')).toHaveValue('Mannerheimintie 5')
+  })
+})
+
+describe('when only one pharmacy is found', () => {
+  it('still says how distances are measured, and that there is no other', async () => {
+    stubNetwork({ overpass: () => jsonResponse({ elements: OVERPASS_PHARMACIES.slice(0, 1) }) })
+    render(<App />)
+    await useMyLocation()
+
+    expect(await screen.findByText('Nearest to you')).toBeVisible()
+    expect(screen.getByText('This is the only pharmacy nearby.')).toBeInTheDocument()
+    expect(screen.getByText(/^Distances/)).toBeInTheDocument()
+  })
+})

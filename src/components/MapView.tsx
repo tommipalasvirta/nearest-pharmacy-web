@@ -128,7 +128,8 @@ export function MapView({ origin, pharmacies, selectedId, onSelect, routeTo, rou
       const marker = L.marker([pharmacy.lat, pharmacy.lon], {
         icon: pinIcon(rank),
         title: pharmacy.name,
-        alt: `${rank}. ${pharmacy.name}`,
+        // Every pin has a row in the list, which is where the keyboard goes.
+        keyboard: false,
         zIndexOffset: pharmacies.length - index,
       })
       marker.on('click', () => onSelect(pharmacy.id))

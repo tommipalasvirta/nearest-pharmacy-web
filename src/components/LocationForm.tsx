@@ -4,11 +4,10 @@ import { LocateIcon } from './Icons'
 interface Props {
   onLocate: () => void
   onSearchAddress: (query: string) => void
-  busy: boolean
 }
 
 /** The two ways to say where you are: share the device location, or type a place. */
-export function LocationForm({ onLocate, onSearchAddress, busy }: Props) {
+export function LocationForm({ onLocate, onSearchAddress }: Props) {
   const [query, setQuery] = useState('')
 
   const submit = (event: FormEvent) => {
@@ -19,7 +18,7 @@ export function LocationForm({ onLocate, onSearchAddress, busy }: Props) {
 
   return (
     <div className="location-form">
-      <button type="button" className="button button--primary" onClick={onLocate} disabled={busy}>
+      <button type="button" className="button button--primary" onClick={onLocate}>
         <LocateIcon />
         Use my location
       </button>
@@ -36,7 +35,7 @@ export function LocationForm({ onLocate, onSearchAddress, busy }: Props) {
             autoComplete="street-address"
             enterKeyHint="search"
           />
-          <button type="submit" className="button" disabled={busy || query.trim() === ''}>
+          <button type="submit" className="button" disabled={query.trim() === ''}>
             Search
           </button>
         </div>

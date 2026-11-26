@@ -88,73 +88,73 @@ export function PharmacyList({
         <PharmacyActions pharmacy={nearest} origin={origin} />
       </article>
 
-      {(others.length > 0 || openOnly) && (
-        <section className="list-card" data-open={listOpen} aria-labelledby="others-heading">
-          <div className="list-card__heading">
-            <h2 className="list-card__title" id="others-heading">
-              {openOnly ? `${pharmacies.length} of ${totalCount} open now` : 'Other pharmacies nearby'}
-            </h2>
-            {others.length > 0 && (
-              <button
-                type="button"
-                className="list-card__toggle"
-                aria-expanded={listOpen}
-                aria-controls="other-pharmacies"
-                onClick={toggleList}
-              >
-                {listOpen ? 'Hide list' : `Show ${others.length} more ${openOnly ? 'open now' : 'nearby'}`}
-              </button>
-            )}
-            <button type="button" className="chip" aria-pressed={openOnly} onClick={onToggleOpenOnly}>
-              {openOnly && <CheckIcon />}
-              Open now
+      <section className="list-card" data-open={listOpen} aria-labelledby="others-heading">
+        <div className="list-card__heading">
+          <h2 className="list-card__title" id="others-heading">
+            {openOnly ? `${pharmacies.length} of ${totalCount} open now` : 'Other pharmacies nearby'}
+          </h2>
+          {others.length > 0 && (
+            <button
+              type="button"
+              className="list-card__toggle"
+              aria-expanded={listOpen}
+              aria-controls="other-pharmacies"
+              onClick={toggleList}
+            >
+              {listOpen ? 'Hide list' : `Show ${others.length} more ${openOnly ? 'open now' : 'nearby'}`}
             </button>
-          </div>
-          <div className="list-card__scroll" id="other-pharmacies">
-            {others.length > 0 ? (
-              <ol className="results" start={2}>
-                {others.map((pharmacy, index) => {
-                  const selected = pharmacy.id === selectedId
-                  return (
-                    <li key={pharmacy.id} id={rowId(pharmacy.id)} className="result" data-selected={selected}>
-                      <button
-                        type="button"
-                        className="result__summary"
-                        aria-expanded={selected}
-                        onClick={() => onSelect(pharmacy.id)}
-                      >
-                        <span className="result__rank" aria-hidden="true">
-                          {index + 2}
-                        </span>
-                        <span className="result__text">
-                          <span className="result__name">{pharmacy.name}</span>
-                          {pharmacy.address && <span className="result__address">{pharmacy.address}</span>}
-                          <OpenStatusLine pharmacy={pharmacy} status={openStatuses.get(pharmacy.id)} />
-                        </span>
-                        <span className="result__trip">
-                          <span className="result__distance">{formatDistance(travelMeters(pharmacy))}</span>
-                          {pharmacy.walk && pharmacy.walk.meters <= WALKABLE_METERS && (
-                            <span className="result__minutes">{pharmacy.walk.minutes} min</span>
-                          )}
-                        </span>
-                      </button>
-                      {selected && <PharmacyActions pharmacy={pharmacy} origin={origin} />}
-                    </li>
-                  )
-                })}
-              </ol>
-            ) : (
-              <p className="list-card__empty">No other pharmacy nearby is open right now.</p>
-            )}
-            <p className="fine-print">
-              {nearest.walk
-                ? 'Distances and times follow walking routes.'
-                : 'Distances are straight lines, so walking routes will be a little longer.'}
-              {savedOn && ` Pharmacy data saved on ${formatDate(savedOn)}.`}
+          )}
+          <button type="button" className="chip" aria-pressed={openOnly} onClick={onToggleOpenOnly}>
+            {openOnly && <CheckIcon />}
+            Open now
+          </button>
+        </div>
+        <div className="list-card__scroll" id="other-pharmacies">
+          {others.length > 0 ? (
+            <ol className="results" start={2}>
+              {others.map((pharmacy, index) => {
+                const selected = pharmacy.id === selectedId
+                return (
+                  <li key={pharmacy.id} id={rowId(pharmacy.id)} className="result" data-selected={selected}>
+                    <button
+                      type="button"
+                      className="result__summary"
+                      aria-expanded={selected}
+                      onClick={() => onSelect(pharmacy.id)}
+                    >
+                      <span className="result__rank" aria-hidden="true">
+                        {index + 2}
+                      </span>
+                      <span className="result__text">
+                        <span className="result__name">{pharmacy.name}</span>
+                        {pharmacy.address && <span className="result__address">{pharmacy.address}</span>}
+                        <OpenStatusLine pharmacy={pharmacy} status={openStatuses.get(pharmacy.id)} />
+                      </span>
+                      <span className="result__trip">
+                        <span className="result__distance">{formatDistance(travelMeters(pharmacy))}</span>
+                        {pharmacy.walk && pharmacy.walk.meters <= WALKABLE_METERS && (
+                          <span className="result__minutes">{pharmacy.walk.minutes} min</span>
+                        )}
+                      </span>
+                    </button>
+                    {selected && <PharmacyActions pharmacy={pharmacy} origin={origin} />}
+                  </li>
+                )
+              })}
+            </ol>
+          ) : (
+            <p className="list-card__empty">
+              {openOnly ? 'No other pharmacy nearby is open right now.' : 'This is the only pharmacy nearby.'}
             </p>
-          </div>
-        </section>
-      )}
+          )}
+          <p className="fine-print">
+            {nearest.walk
+              ? 'Distances and times follow walking routes.'
+              : 'Distances are straight lines, so walking routes will be a little longer.'}
+            {savedOn && ` Pharmacy data saved on ${formatDate(savedOn)}.`}
+          </p>
+        </div>
+      </section>
     </div>
   )
 }
@@ -162,4 +162,4 @@ export function PharmacyList({
 const rowId = (pharmacyId: string) => `pharmacy-${pharmacyId.replace('/', '-')}`
 
 const formatDate = (isoDate: string) =>
-  new Date(isoDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  new Date(isoDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })

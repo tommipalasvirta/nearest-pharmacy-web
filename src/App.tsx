@@ -6,7 +6,7 @@ import { PharmacyList } from './components/PharmacyList'
 import { SearchBar } from './components/SearchBar'
 import { StatusMessage } from './components/StatusMessage'
 import { useOpenNowFilter } from './hooks/useOpenNowFilter'
-import { usePharmacySearch } from './hooks/usePharmacySearch'
+import { usePharmacySearch, type SearchResults } from './hooks/usePharmacySearch'
 import { useWalkingRoute } from './hooks/useWalkingRoute'
 import { hasLocationPermission } from './lib/geolocation'
 import type { Pharmacy } from './lib/types'
@@ -47,10 +47,14 @@ export default function App() {
     return { top: searchRef.current?.getBoundingClientRect().bottom ?? 0, left: 0 }
   }, [])
 
-  const origin = 'origin' in state ? state.origin : undefined
-  const results = state.status === 'results' ? state : undefined
+  // Until a new search knows where it is looking (or when it never finds out),
+  // the previous results stay on screen instead of the start page coming back.
+  const [lastResults, setLastResults] = useState<SearchResults>()
+  if (state.status === 'results' && state !== lastResults) setLastResults(state)
+  const searchOrigin = 'origin' in state ? state.origin : undefined
+  const results = state.status === 'results' ? state : searchOrigin ? undefined : lastResults
+  const origin = searchOrigin ?? results?.origin
   const found = results?.pharmacies ?? NO_PHARMACIES
-  const busy = state.status === 'locating' || state.status === 'searching'
 
   const { openOnly, setOpenOnly, visible: pharmacies } = useOpenNowFilter(found, results?.openStatuses)
 
@@ -77,10 +81,11 @@ export default function App() {
             Share your location or type an address to see the closest pharmacies, ranked by distance,
             with opening hours where they are known.
           </p>
-          <LocationForm onLocate={locate} onSearchAddress={searchAddress} busy={busy} />
+          <LocationForm onLocate={locate} onSearchAddress={searchAddress} />
           {status}
           <p className="fine-print">
-            Your location is used for this search only and is never stored. Pharmacy data ©{' '}
+            Your location is sent to OpenStreetMap-based services to run the search. This app does not
+            store it. Pharmacy data ©{' '}
             <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
               OpenStreetMap
             </a>{' '}
@@ -112,21 +117,14 @@ export default function App() {
             place={origin.label}
             onLocate={locate}
             onSearchAddress={searchAddress}
-            busy={busy}
           />
           {status}
           {results && pharmacies.length === 0 && (
-            <div className="message" role="status">
-              <h2>No pharmacy nearby is open right now</h2>
-              <p>
-                {results.openStatuses.size === 0
-                  ? `Opening hours are not listed for any of the ${found.length} nearest pharmacies.`
-                  : `The ${found.length} nearest pharmacies are closed or have no opening hours listed.`}
-              </p>
-              <button type="button" className="button" onClick={() => setOpenOnly(false)}>
-                Show all {found.length}
-              </button>
-            </div>
+            <NothingOpen
+              count={found.length}
+              hoursKnown={results.openStatuses.size > 0}
+              onShowAll={() => setOpenOnly(false)}
+            />
           )}
         </div>
         {results && pharmacies.length > 0 && (
@@ -144,5 +142,27 @@ export default function App() {
         )}
       </div>
     </main>
+  )
+}
+
+/** Shown when the "Open now" filter leaves nothing to list. */
+function NothingOpen({ count, hoursKnown, onShowAll }: { count: number; hoursKnown: boolean; onShowAll: () => void }) {
+  const one = count === 1
+  return (
+    <div className="message" role="status">
+      <h2>No pharmacy nearby is open right now</h2>
+      <p>
+        {hoursKnown
+          ? one
+            ? 'The only pharmacy nearby is closed.'
+            : `The ${count} nearest pharmacies are closed or have no opening hours listed.`
+          : one
+            ? 'Opening hours are not listed for the only pharmacy nearby.'
+            : `Opening hours are not listed for any of the ${count} nearest pharmacies.`}
+      </p>
+      <button type="button" className="button" onClick={onShowAll}>
+        {one ? 'Show it' : `Show all ${count}`}
+      </button>
+    </div>
   )
 }
